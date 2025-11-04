@@ -119,3 +119,32 @@
   background-color: #ffebee;
   color: #d32f2f;
 }
+
+.transform-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.transform-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ced4da;
+  background-color: #f8f9fa;
+  color: #495057;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.transform-btn:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.transform-btn:active {
+  background-color: #495057;
+  color: white;
+  border-color: #495057;
+}

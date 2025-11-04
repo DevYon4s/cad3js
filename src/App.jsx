@@ -12,8 +12,9 @@ import './App.css';
 
 function App() {
   const canvasRef = useRef();
-  const { scene, camera, renderer } = useThree(canvasRef);
-  const selected = useSelection(camera, scene, canvasRef.current);
+  const { scene, camera, renderer, attachTransformControls, detachTransformControls, setTransformMode } = useThree(canvasRef);
+  const transformControls = { attachTransformControls, detachTransformControls, setTransformMode };
+  const selected = useSelection(camera, scene, canvasRef.current, transformControls);
   const sketch = useSketch(scene, camera, renderer);
   const [shapeCount, setShapeCount] = useState(0);
   const [lightsAdded, setLightsAdded] = useState(false);
@@ -119,7 +120,10 @@ function App() {
               snapToGrid={snapToGrid}
             />
           )}
-          <PropertyPanel selected={selected} />
+          <PropertyPanel 
+            selected={selected} 
+            transformControls={transformControls}
+          />
         </div>
       </div>
     </div>

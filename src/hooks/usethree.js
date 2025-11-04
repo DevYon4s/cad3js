@@ -1,12 +1,14 @@
 
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
 const useThree = (canvasRef) => {
   const sceneRef = useRef(new THREE.Scene());
   const cameraRef = useRef(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
   const rendererRef = useRef(null);
   const animationFrameId = useRef(null);
+  const transformControlsRef = useRef(null);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -31,10 +33,14 @@ const useThree = (canvasRef) => {
     // Camera position
     cameraRef.current.position.set(8, 6, 8);
     cameraRef.current.lookAt(0, 0, 0);
-
-    // Camera position
-    cameraRef.current.position.set(8, 6, 8);
-    cameraRef.current.lookAt(0, 0, 0);
+    
+    // Initialize Transform Controls
+    const transformControls = new TransformControls(cameraRef.current, renderer.domElement);
+    transformControls.addEventListener('change', () => {
+      // Trigger re-render when transform changes
+    });
+    sceneRef.current.add(transformControls);
+    transformControlsRef.current = transformControls;
 
     // Render loop
     const animate = () => {
@@ -64,13 +70,38 @@ const useThree = (canvasRef) => {
       if (rendererRef.current) {
         rendererRef.current.dispose();
       }
+      if (transformControlsRef.current) {
+        sceneRef.current.remove(transformControlsRef.current);
+        transformControlsRef.current.dispose();
+      }
     };
   }, [canvasRef]);
+
+  const attachTransformControls = (object) => {
+    if (transformControlsRef.current && object) {
+      transformControlsRef.current.attach(object);
+    }
+  };
+  
+  const detachTransformControls = () => {
+    if (transformControlsRef.current) {
+      transformControlsRef.current.detach();
+    }
+  };
+  
+  const setTransformMode = (mode) => {
+    if (transformControlsRef.current) {
+      transformControlsRef.current.setMode(mode);
+    }
+  };
 
   return { 
     scene: sceneRef.current, 
     camera: cameraRef.current, 
-    renderer: rendererRef.current
+    renderer: rendererRef.current,
+    attachTransformControls,
+    detachTransformControls,
+    setTransformMode
   };
 };
 

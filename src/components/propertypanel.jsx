@@ -2,7 +2,7 @@
 import React from 'react';
 import './PropertyPanel.css';
 
-const PropertyPanel = ({ selected }) => {
+const PropertyPanel = ({ selected, transformControls }) => {
   if (!selected) {
     return (
       <div className="property-panel">
@@ -48,39 +48,76 @@ const PropertyPanel = ({ selected }) => {
       </div>
       
       {type === 'shape' && data && (
-        <div className="property-group">
-          <h3>Transform</h3>
-          <div className="property-item">
-            <label>Position:</label>
-            <span>X: {data.position.x.toFixed(2)}, Y: {data.position.y.toFixed(2)}, Z: {data.position.z.toFixed(2)}</span>
+        <>
+          <div className="property-group">
+            <h3>Transform Controls</h3>
+            <div className="transform-buttons">
+              <button 
+                className="transform-btn"
+                onClick={() => transformControls?.setTransformMode('translate')}
+              >
+                Move
+              </button>
+              <button 
+                className="transform-btn"
+                onClick={() => transformControls?.setTransformMode('rotate')}
+              >
+                Rotate
+              </button>
+              <button 
+                className="transform-btn"
+                onClick={() => transformControls?.setTransformMode('scale')}
+              >
+                Scale
+              </button>
+            </div>
           </div>
-          <div className="property-item">
-            <label>Rotation:</label>
-            <span>X: {(data.rotation.x * 180/Math.PI).toFixed(1)}°, Y: {(data.rotation.y * 180/Math.PI).toFixed(1)}°, Z: {(data.rotation.z * 180/Math.PI).toFixed(1)}°</span>
+          <div className="property-group">
+            <h3>Transform Values</h3>
+            <div className="property-item">
+              <label>Position:</label>
+              <span>X: {object.position.x.toFixed(2)}, Y: {object.position.y.toFixed(2)}, Z: {object.position.z.toFixed(2)}</span>
+            </div>
+            <div className="property-item">
+              <label>Rotation:</label>
+              <span>X: {(object.rotation.x * 180/Math.PI).toFixed(1)}°, Y: {(object.rotation.y * 180/Math.PI).toFixed(1)}°, Z: {(object.rotation.z * 180/Math.PI).toFixed(1)}°</span>
+            </div>
+            <div className="property-item">
+              <label>Scale:</label>
+              <span>X: {object.scale.x.toFixed(2)}, Y: {object.scale.y.toFixed(2)}, Z: {object.scale.z.toFixed(2)}</span>
+            </div>
           </div>
-          <div className="property-item">
-            <label>Scale:</label>
-            <span>X: {data.scale.x.toFixed(2)}, Y: {data.scale.y.toFixed(2)}, Z: {data.scale.z.toFixed(2)}</span>
-          </div>
-        </div>
+        </>
       )}
       
       {type === 'face' && (
         <div className="property-group">
-          <h3>Face Info</h3>
+          <h3>Face Properties</h3>
           <div className="property-item">
             <label>Face Index:</label>
             <span>{data.faceIndex}</span>
+          </div>
+          <div className="property-item">
+            <label>Area:</label>
+            <span>Calculating...</span>
+          </div>
+          <div className="property-item">
+            <label>Normal:</label>
+            <span>Calculating...</span>
           </div>
         </div>
       )}
       
       {type === 'edge' && (
         <div className="property-group">
-          <h3>Edge Info</h3>
+          <h3>Edge Properties</h3>
           <div className="property-item">
             <label>From Face:</label>
             <span>{data.faceIndex}</span>
+          </div>
+          <div className="property-item">
+            <label>Length:</label>
+            <span>{data.edge ? data.edge[0].distanceTo(data.edge[1]).toFixed(2) : 'N/A'}</span>
           </div>
         </div>
       )}

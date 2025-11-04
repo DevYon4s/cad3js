@@ -18,6 +18,7 @@ class SketchTool {
     this.gridHelper = null;
     this.sketchGroup = new THREE.Group();
     this.completedSketches = [];
+    this.dimensionText = null;
     
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
@@ -167,8 +168,10 @@ class SketchTool {
     
     if (this.currentTool === 'rectangle') {
       this.previewMesh = this.createRectanglePreview();
+      this.showDimensions('rectangle');
     } else if (this.currentTool === 'circle') {
       this.previewMesh = this.createCirclePreview();
+      this.showDimensions('circle');
     }
     
     if (this.previewMesh) {
@@ -256,7 +259,11 @@ class SketchTool {
     
     const mesh = new THREE.Mesh(geometry, material);
     mesh.rotation.x = -Math.PI / 2;
-    mesh.position.y = 0.01;
+    mesh.position.set(
+      (minX + maxX) / 2,
+      0.01,
+      (minZ + maxZ) / 2
+    );
     mesh.userData = {
       cadType: 'sketch',
       sketchType: 'rectangle',
@@ -285,7 +292,11 @@ class SketchTool {
     
     const mesh = new THREE.Mesh(geometry, material);
     mesh.rotation.x = -Math.PI / 2;
-    mesh.position.y = 0.01;
+    mesh.position.set(
+      this.startPoint.x,
+      0.01,
+      this.startPoint.z
+    );
     mesh.userData = {
       cadType: 'sketch',
       sketchType: 'circle',
@@ -304,6 +315,10 @@ class SketchTool {
       this.previewMesh.geometry.dispose();
       this.previewMesh.material.dispose();
       this.previewMesh = null;
+    }
+    if (this.dimensionText) {
+      this.scene.remove(this.dimensionText);
+      this.dimensionText = null;
     }
   }
   
@@ -351,6 +366,23 @@ class SketchTool {
       sketch.mesh.material.dispose();
     });
     this.completedSketches = [];
+  }
+  
+  showDimensions(type) {
+    if (!this.startPoint || !this.currentPoint) return;
+    
+    let text = '';
+    if (type === 'rectangle') {
+      const width = Math.abs(this.currentPoint.x - this.startPoint.x);
+      const height = Math.abs(this.currentPoint.z - this.startPoint.z);
+      text = `W: ${width.toFixed(2)} × H: ${height.toFixed(2)}`;
+    } else if (type === 'circle') {
+      const radius = this.startPoint.distanceTo(this.currentPoint);
+      text = `R: ${radius.toFixed(2)}`;
+    }
+    
+    // Create text sprite (simplified - just log for now)
+    console.log(text);
   }
   
   dispose() {

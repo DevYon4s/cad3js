@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const useSelection = (camera, scene, canvas) => {
+const useSelection = (camera, scene, canvas, transformControls) => {
   const [selected, setSelected] = useState(null);
   const raycaster = useRef(new THREE.Raycaster());
   const mouse = useRef(new THREE.Vector2());
@@ -141,9 +141,14 @@ const useSelection = (camera, scene, canvas) => {
           // Shape Selection (Normal Click)
           originalMaterial.current = object.material;
           object.material = object.material.clone();
-          object.material.color.setHex(0x4488ff);
+          object.material.color.setHex(0x6c757d);
           object.material.transparent = true;
           object.material.opacity = 0.8;
+
+          // Attach transform controls
+          if (transformControls?.attachTransformControls) {
+            transformControls.attachTransformControls(object);
+          }
 
           setSelected({ 
             type: 'shape', 
@@ -158,6 +163,10 @@ const useSelection = (camera, scene, canvas) => {
           });
         }
       } else {
+        // Detach transform controls when nothing is selected
+        if (transformControls?.detachTransformControls) {
+          transformControls.detachTransformControls();
+        }
         setSelected(null);
       }
     };
