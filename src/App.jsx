@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import useThree from './hooks/usethree';
 import { createBox, createSphere, createCylinder } from './threelogics/primitives';
@@ -12,37 +12,76 @@ function App() {
   const canvasRef = useRef();
   const { scene, camera } = useThree(canvasRef);
   const selected = useSelection(camera, scene, canvasRef.current);
+  const [shapeCount, setShapeCount] = useState(0);
+  const [lightsAdded, setLightsAdded] = useState(false);
 
   const handleAddShape = (shapeType) => {
     let shape;
+    const spacing = 3;
+    const row = Math.floor(shapeCount / 4);
+    const col = shapeCount % 4;
+    const positionX = (col - 1.5) * spacing;
+    const positionZ = (row - 1) * spacing;
+
     switch (shapeType) {
       case 'box':
-        shape = createBox(1);
+        shape = createBox(1.5);
         break;
       case 'sphere':
-        shape = createSphere(0.5);
+        shape = createSphere(0.8);
         break;
       case 'cylinder':
-        shape = createCylinder(0.5, 1);
+        shape = createCylinder(0.7, 1.8);
         break;
       default:
         break;
     }
     if (shape) {
+      shape.position.set(positionX, 0, positionZ);
       scene.add(shape);
+      setShapeCount(shapeCount + 1);
     }
   };
 
   useEffect(() => {
-    if (scene) {
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    if (scene && !lightsAdded) {
+      // Add ground plane
+      const groundGeometry = new THREE.PlaneGeometry(50, 50);
+      const groundMaterial = new THREE.MeshStandardMaterial({ 
+        color: 0xffffff, 
+        transparent: true, 
+        opacity: 0.1 
+      });
+      const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = -2;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      // Lighting setup
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
       scene.add(ambientLight);
 
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-      directionalLight.position.set(5, 5, 5);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight.position.set(10, 10, 5);
+      directionalLight.castShadow = true;
+      directionalLight.shadow.mapSize.width = 2048;
+      directionalLight.shadow.mapSize.height = 2048;
+      directionalLight.shadow.camera.near = 0.5;
+      directionalLight.shadow.camera.far = 50;
+      directionalLight.shadow.camera.left = -20;
+      directionalLight.shadow.camera.right = 20;
+      directionalLight.shadow.camera.top = 20;
+      directionalLight.shadow.camera.bottom = -20;
       scene.add(directionalLight);
+
+      const fillLight = new THREE.DirectionalLight(0x4488ff, 0.3);
+      fillLight.position.set(-5, 3, -5);
+      scene.add(fillLight);
+
+      setLightsAdded(true);
     }
-  }, [scene]);
+  }, [scene, lightsAdded]);
 
   return (
     <div className="App">
