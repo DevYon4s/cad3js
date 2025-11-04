@@ -3,17 +3,21 @@ import * as THREE from 'three';
 import useThree from './hooks/usethree';
 import { createBox, createSphere, createCylinder } from './threelogics/primitives';
 import useSelection from './hooks/useselection';
+import useSketch from './hooks/usesketch';
 import CadToolbar from './components/cadtoolbar';
 import PropertyPanel from './components/propertypanel';
+import SketchPanel from './components/SketchPanel';
 import TopNav from './components/TopNav';
 import './App.css';
 
 function App() {
   const canvasRef = useRef();
-  const { scene, camera } = useThree(canvasRef);
+  const { scene, camera, renderer } = useThree(canvasRef);
   const selected = useSelection(camera, scene, canvasRef.current);
+  const sketch = useSketch(scene, camera, renderer);
   const [shapeCount, setShapeCount] = useState(0);
   const [lightsAdded, setLightsAdded] = useState(false);
+  const [snapToGrid, setSnapToGrid] = useState(true);
 
   const handleAddShape = (shapeType) => {
     let shape;
@@ -83,15 +87,40 @@ function App() {
     }
   }, [scene, lightsAdded]);
 
+  const handleToggleSnapToGrid = () => {
+    const newSnapState = sketch.toggleSnapToGrid();
+    setSnapToGrid(newSnapState);
+  };
+
   return (
     <div className="App">
       <div className="top-nav-container">
         <TopNav />
       </div>
       <div className="main-content">
-        <CadToolbar onAddShape={handleAddShape} />
+        <CadToolbar 
+          onAddShape={handleAddShape}
+          onEnterSketchMode={sketch.enterSketchMode}
+          onExitSketchMode={sketch.exitSketchMode}
+          onSwitchSketchTool={sketch.switchSketchTool}
+          isSketchMode={sketch.isSketchMode}
+          currentSketchTool={sketch.currentSketchTool}
+        />
         <canvas ref={canvasRef} />
-        <PropertyPanel selected={selected} />
+        <div className="right-panel">
+          {sketch.isSketchMode && (
+            <SketchPanel
+              completedSketches={sketch.completedSketches}
+              selectedSketch={sketch.selectedSketch}
+              setSelectedSketch={sketch.setSelectedSketch}
+              onExtrudeSketch={sketch.extrudeSketch}
+              onClearSketches={sketch.clearAllSketches}
+              onToggleSnapToGrid={handleToggleSnapToGrid}
+              snapToGrid={snapToGrid}
+            />
+          )}
+          <PropertyPanel selected={selected} />
+        </div>
       </div>
     </div>
   );

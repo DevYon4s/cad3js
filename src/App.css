@@ -34,8 +34,19 @@ canvas:active {
   cursor: grabbing;
 }
 
-.property-panel {
+.right-panel {
   width: 320px;
   background-color: #fff;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.property-panel {
+  background-color: transparent;
+  padding: 0;
+  border-left: none;
 }

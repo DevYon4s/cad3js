@@ -2,19 +2,18 @@ Context: The development environment is a standard React/Vite setup with Three.j
 
 Constraint: DO NOT use @react-three/fiber or @react-three/drei. Direct usage of THREE objects and managing the rendering loop via requestAnimationFrame within React hooks (useRef, useEffect) is mandatory.
 
-1. Primitive Shape Creation & Selection
-Target Files: src/hooks/useThree.js, src/three-logic/Primitives.js, src/hooks/useSelection.js
 
-useThree.js (Core Loop): Implement the function to initialize and return the THREE.Scene, THREE.PerspectiveCamera, and the THREE.WebGLRenderer.domElement. Implement the main requestAnimationFrame render loop.
+2.2D Sketching and Extrusion
+File: src/three-logic/SketchTool.js File: src/components/CADToolbar.jsx (UI)
 
-Primitives.js (Factory): Implement factory functions (createBox(size), createSphere(radius), createCylinder(radius, height)) that return a fully configured THREE.Mesh object. Each mesh must have a persistent, unique ID and metadata (e.g., mesh.userData.cadType = 'box').
+Sketch Mode: Create a Sketch Mode handler. When active, display a XZ-plane grid (using THREE.GridHelper) and disable OrbitControls.
 
-useSelection.js (Raycasting): Implement advanced raycasting to detect and identify:
+Drawing: Implement Rectangle and Circle drawing tools using a simple state machine (e.g., waiting for first click, drawing, finished).
 
-Shape Selection: Standard raycast against the mesh.
+Rectangle: Capture two clicks to define the boundary.
 
-Face Selection: Use the raycast intersection to determine the hit face (intersection.faceIndex for Geometry or appropriate data for BufferGeometry). Visually highlight the selected face with a temporary, distinct, transparent mesh overlay.
+Circle: Capture the center click and a second click to define the radius.
 
-Edge Selection: Calculate which edge is closest to the intersection point. Visually highlight the selected edge using an overlaid THREE.LineSegments object (e.g., a THREE.WireframeGeometry for simplification).
+Snap-to-Grid: Implement a utility to snap the mouse pointer coordinates to the nearest grid point (e.g., 0.5 or 1 unit increments) before use.
 
-Expose a state hook for the currently selected entity ({ type: 'face'|'edge'|'shape', object: THREE.Object3D, data: {} }).
+Extrusion: Upon completing a sketch, use a UI input to define the extrusion height. Use THREE.ShapeGeometry (for the 2D path) and then THREE.ExtrudeGeometry to create the final 3D shape. Add the extruded mesh to the scene.

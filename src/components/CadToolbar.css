@@ -25,6 +25,10 @@
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
 }
 
 .toolbar-group > button:hover {
@@ -32,6 +36,17 @@
   border-color: #ced4da;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toolbar-group > button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.toolbar-group > button.active:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
 }
 
 .shape-dropdown {
@@ -85,4 +100,46 @@
 
 .shape-dropdown button:hover svg {
   color: #495057;
+}
+
+.sketch-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.sketch-tools button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  background-color: white;
+  color: #495057;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sketch-tools button:hover {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+}
+
+.sketch-tools button.active {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+.sketch-tools button.active:hover {
+  background-color: #218838;
+  border-color: #218838;
 }
