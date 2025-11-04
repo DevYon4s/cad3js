@@ -143,8 +143,24 @@
   border-color: #adb5bd;
 }
 
-.transform-btn:active {
+.transform-btn:active,
+.transform-btn.active {
   background-color: #495057;
   color: white;
   border-color: #495057;
+}
+
+.transform-help {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border-left: 3px solid #495057;
+}
+
+.transform-help p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6c757d;
+  line-height: 1.4;
 }

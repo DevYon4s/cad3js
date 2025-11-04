@@ -7,6 +7,8 @@ const useSketch = (scene, camera, renderer) => {
   const [currentSketchTool, setCurrentSketchTool] = useState('rectangle');
   const [completedSketches, setCompletedSketches] = useState([]);
   const [selectedSketch, setSelectedSketch] = useState(null);
+  const [currentDimensions, setCurrentDimensions] = useState(null);
+  const [showDimensions, setShowDimensions] = useState(false);
 
   useEffect(() => {
     if (scene && camera && renderer && renderer.domElement) {
@@ -24,6 +26,13 @@ const useSketch = (scene, camera, renderer) => {
     if (sketchToolRef.current) {
       setIsSketchMode(true);
       setCurrentSketchTool(tool);
+      sketchToolRef.current.onDimensionUpdate = (dimensions) => {
+        setCurrentDimensions(dimensions);
+        setShowDimensions(true);
+      };
+      sketchToolRef.current.onDimensionHide = () => {
+        setShowDimensions(false);
+      };
       sketchToolRef.current.activate(tool);
     }
   };
@@ -32,6 +41,7 @@ const useSketch = (scene, camera, renderer) => {
     if (sketchToolRef.current) {
       setIsSketchMode(false);
       sketchToolRef.current.deactivate();
+      setShowDimensions(false);
       updateCompletedSketches();
     }
   };
@@ -100,6 +110,8 @@ const useSketch = (scene, camera, renderer) => {
     extrudeSketch,
     clearAllSketches,
     toggleSnapToGrid,
+    currentDimensions,
+    showDimensions,
     sketchTool: sketchToolRef.current
   };
 };

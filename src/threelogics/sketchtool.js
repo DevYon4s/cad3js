@@ -40,7 +40,7 @@ class SketchTool {
     this.sketchPlane.rotation.x = -Math.PI / 2;
     this.sketchPlane.position.y = 0;
     
-    this.gridHelper = new THREE.GridHelper(20, 40, 0x888888, 0xcccccc);
+    this.gridHelper = new THREE.GridHelper(100, 200, 0x888888, 0xcccccc);
     this.gridHelper.visible = false;
     
     this.scene.add(this.sketchPlane);
@@ -59,6 +59,11 @@ class SketchTool {
     window.addEventListener('keydown', this.onKeyDown);
     
     this.renderer.domElement.style.cursor = 'crosshair';
+    
+    // Disable camera controls when sketch mode is active
+    if (this.onDisableCameraControls) {
+      this.onDisableCameraControls();
+    }
   }
   
   deactivate() {
@@ -73,6 +78,11 @@ class SketchTool {
     window.removeEventListener('keydown', this.onKeyDown);
     
     this.renderer.domElement.style.cursor = 'grab';
+    
+    // Re-enable camera controls when sketch mode is deactivated
+    if (this.onEnableCameraControls) {
+      this.onEnableCameraControls();
+    }
   }
   
   snapToGridPoint(point) {
@@ -239,17 +249,13 @@ class SketchTool {
     
     if (width < 0.1 || height < 0.1) return null;
     
+    // Create shape with relative coordinates centered at origin
     const shape = new THREE.Shape();
-    const minX = Math.min(this.startPoint.x, this.currentPoint.x);
-    const maxX = Math.max(this.startPoint.x, this.currentPoint.x);
-    const minZ = Math.min(this.startPoint.z, this.currentPoint.z);
-    const maxZ = Math.max(this.startPoint.z, this.currentPoint.z);
-    
-    shape.moveTo(minX, minZ);
-    shape.lineTo(maxX, minZ);
-    shape.lineTo(maxX, maxZ);
-    shape.lineTo(minX, maxZ);
-    shape.lineTo(minX, minZ);
+    shape.moveTo(-width/2, -height/2);
+    shape.lineTo(width/2, -height/2);
+    shape.lineTo(width/2, height/2);
+    shape.lineTo(-width/2, height/2);
+    shape.lineTo(-width/2, -height/2);
     
     const geometry = new THREE.ShapeGeometry(shape);
     const material = new THREE.MeshStandardMaterial({ 
@@ -259,11 +265,10 @@ class SketchTool {
     
     const mesh = new THREE.Mesh(geometry, material);
     mesh.rotation.x = -Math.PI / 2;
-    mesh.position.set(
-      (minX + maxX) / 2,
-      0.01,
-      (minZ + maxZ) / 2
-    );
+    // Position at the center of the drawn rectangle
+    const centerX = (this.startPoint.x + this.currentPoint.x) / 2;
+    const centerZ = (this.startPoint.z + this.currentPoint.z) / 2;
+    mesh.position.set(centerX, 0.01, centerZ);
     mesh.userData = {
       cadType: 'sketch',
       sketchType: 'rectangle',
@@ -281,8 +286,9 @@ class SketchTool {
     
     if (radius < 0.1) return null;
     
+    // Create shape with center at origin
     const shape = new THREE.Shape();
-    shape.absarc(this.startPoint.x, this.startPoint.z, radius, 0, Math.PI * 2, false);
+    shape.absarc(0, 0, radius, 0, Math.PI * 2, false);
     
     const geometry = new THREE.ShapeGeometry(shape);
     const material = new THREE.MeshStandardMaterial({ 
@@ -319,6 +325,9 @@ class SketchTool {
     if (this.dimensionText) {
       this.scene.remove(this.dimensionText);
       this.dimensionText = null;
+    }
+    if (this.onDimensionHide) {
+      this.onDimensionHide();
     }
   }
   
@@ -381,8 +390,9 @@ class SketchTool {
       text = `R: ${radius.toFixed(2)}`;
     }
     
-    // Create text sprite (simplified - just log for now)
-    console.log(text);
+    if (this.onDimensionUpdate) {
+      this.onDimensionUpdate(text);
+    }
   }
   
   dispose() {

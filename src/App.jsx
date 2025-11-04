@@ -7,15 +7,24 @@ import useSketch from './hooks/usesketch';
 import CadToolbar from './components/cadtoolbar';
 import PropertyPanel from './components/propertypanel';
 import SketchPanel from './components/SketchPanel';
+import DimensionOverlay from './components/DimensionOverlay';
 import TopNav from './components/TopNav';
 import './App.css';
 
 function App() {
   const canvasRef = useRef();
-  const { scene, camera, renderer, attachTransformControls, detachTransformControls, setTransformMode } = useThree(canvasRef);
+  const { scene, camera, renderer, attachTransformControls, detachTransformControls, setTransformMode, enableCameraControls, disableCameraControls } = useThree(canvasRef);
   const transformControls = { attachTransformControls, detachTransformControls, setTransformMode };
   const selected = useSelection(camera, scene, canvasRef.current, transformControls);
   const sketch = useSketch(scene, camera, renderer);
+  
+  // Set camera control callbacks for sketch tool
+  useEffect(() => {
+    if (sketch.sketchTool) {
+      sketch.sketchTool.onEnableCameraControls = enableCameraControls;
+      sketch.sketchTool.onDisableCameraControls = disableCameraControls;
+    }
+  }, [sketch.sketchTool, enableCameraControls, disableCameraControls]);
   const [shapeCount, setShapeCount] = useState(0);
   const [lightsAdded, setLightsAdded] = useState(false);
   const [snapToGrid, setSnapToGrid] = useState(true);
@@ -107,7 +116,13 @@ function App() {
           isSketchMode={sketch.isSketchMode}
           currentSketchTool={sketch.currentSketchTool}
         />
-        <canvas ref={canvasRef} />
+        <div style={{ position: 'relative', flexGrow: 1 }}>
+          <canvas ref={canvasRef} />
+          <DimensionOverlay 
+            dimensions={sketch.currentDimensions}
+            isVisible={sketch.showDimensions}
+          />
+        </div>
         <div className="right-panel">
           {sketch.isSketchMode && (
             <SketchPanel

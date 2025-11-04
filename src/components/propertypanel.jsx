@@ -53,23 +53,29 @@ const PropertyPanel = ({ selected, transformControls }) => {
             <h3>Transform Controls</h3>
             <div className="transform-buttons">
               <button 
-                className="transform-btn"
+                className="transform-btn active"
                 onClick={() => transformControls?.setTransformMode('translate')}
+                title="Move (G)"
               >
                 Move
               </button>
               <button 
                 className="transform-btn"
                 onClick={() => transformControls?.setTransformMode('rotate')}
+                title="Rotate (R)"
               >
                 Rotate
               </button>
               <button 
                 className="transform-btn"
                 onClick={() => transformControls?.setTransformMode('scale')}
+                title="Scale (S)"
               >
                 Scale
               </button>
+            </div>
+            <div className="transform-help">
+              <p>Click and drag the gizmo handles to transform the selected object.</p>
             </div>
           </div>
           <div className="property-group">
@@ -99,11 +105,11 @@ const PropertyPanel = ({ selected, transformControls }) => {
           </div>
           <div className="property-item">
             <label>Area:</label>
-            <span>Calculating...</span>
+            <span>{data.area ? data.area.toFixed(4) : 'N/A'}</span>
           </div>
           <div className="property-item">
             <label>Normal:</label>
-            <span>Calculating...</span>
+            <span>{data.normal ? `(${data.normal.x.toFixed(2)}, ${data.normal.y.toFixed(2)}, ${data.normal.z.toFixed(2)})` : 'N/A'}</span>
           </div>
         </div>
       )}

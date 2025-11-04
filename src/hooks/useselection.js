@@ -127,13 +127,22 @@ const useSelection = (camera, scene, canvas, transformControls) => {
             highlightMesh.current.matrixAutoUpdate = false;
             scene.add(highlightMesh.current);
 
+            // Calculate face area and normal
+            const ab = new THREE.Vector3().subVectors(b, a);
+            const ac = new THREE.Vector3().subVectors(c, a);
+            const cross = new THREE.Vector3().crossVectors(ab, ac);
+            const area = cross.length() / 2;
+            const normal = cross.normalize();
+
             setSelected({ 
               type: 'face', 
               object, 
               data: { 
                 faceIndex: face.a,
                 cadType: object.userData.cadType,
-                id: object.userData.id
+                id: object.userData.id,
+                area: area,
+                normal: normal
               } 
             });
           }

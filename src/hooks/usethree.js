@@ -9,6 +9,7 @@ const useThree = (canvasRef) => {
   const rendererRef = useRef(null);
   const animationFrameId = useRef(null);
   const transformControlsRef = useRef(null);
+  const controlsEnabledRef = useRef(true);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -34,10 +35,58 @@ const useThree = (canvasRef) => {
     cameraRef.current.position.set(8, 6, 8);
     cameraRef.current.lookAt(0, 0, 0);
     
+    // Basic orbit controls
+    let isMouseDown = false;
+    let mouseX = 0;
+    let mouseY = 0;
+    let radius = 12;
+    let theta = Math.PI / 4;
+    let phi = Math.PI / 3;
+    const onMouseDown = (event) => {
+      if (event.button === 0 && controlsEnabledRef.current) {
+        isMouseDown = true;
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+      }
+    };
+
+    const onMouseMove = (event) => {
+      if (!isMouseDown || !controlsEnabledRef.current) return;
+      
+      const deltaX = event.clientX - mouseX;
+      const deltaY = event.clientY - mouseY;
+      
+      theta -= deltaX * 0.01;
+      phi = Math.max(0.1, Math.min(Math.PI - 0.1, phi + deltaY * 0.01));
+      
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+    };
+
+    const onMouseUp = () => {
+      isMouseDown = false;
+    };
+
+    const onWheel = (event) => {
+      if (controlsEnabledRef.current) {
+        radius = Math.max(3, Math.min(50, radius + event.deltaY * 0.01));
+      }
+    };
+
+    canvasRef.current.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+    canvasRef.current.addEventListener('wheel', onWheel);
+    
     // Initialize Transform Controls
     const transformControls = new TransformControls(cameraRef.current, renderer.domElement);
+    transformControls.setMode('translate'); // Default to translate mode
+    transformControls.setSize(0.8); // Make gizmos appropriately sized
     transformControls.addEventListener('change', () => {
       // Trigger re-render when transform changes
+    });
+    transformControls.addEventListener('dragging-changed', (event) => {
+      controlsEnabledRef.current = !event.value;
     });
     sceneRef.current.add(transformControls);
     transformControlsRef.current = transformControls;
@@ -45,6 +94,15 @@ const useThree = (canvasRef) => {
     // Render loop
     const animate = () => {
       animationFrameId.current = requestAnimationFrame(animate);
+      
+      // Update camera position
+      if (controlsEnabledRef.current) {
+        cameraRef.current.position.x = radius * Math.sin(phi) * Math.cos(theta);
+        cameraRef.current.position.y = radius * Math.cos(phi);
+        cameraRef.current.position.z = radius * Math.sin(phi) * Math.sin(theta);
+        cameraRef.current.lookAt(0, 0, 0);
+      }
+      
       renderer.render(sceneRef.current, cameraRef.current);
     };
 
@@ -64,6 +122,10 @@ const useThree = (canvasRef) => {
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
+      canvasRef.current?.removeEventListener('mousedown', onMouseDown);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      canvasRef.current?.removeEventListener('wheel', onWheel);
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
       }
@@ -94,6 +156,14 @@ const useThree = (canvasRef) => {
       transformControlsRef.current.setMode(mode);
     }
   };
+  
+  const enableCameraControls = () => {
+    controlsEnabledRef.current = true;
+  };
+  
+  const disableCameraControls = () => {
+    controlsEnabledRef.current = false;
+  };
 
   return { 
     scene: sceneRef.current, 
@@ -101,7 +171,9 @@ const useThree = (canvasRef) => {
     renderer: rendererRef.current,
     attachTransformControls,
     detachTransformControls,
-    setTransformMode
+    setTransformMode,
+    enableCameraControls,
+    disableCameraControls
   };
 };
 
