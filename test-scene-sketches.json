@@ -1,0 +1,148 @@
+{
+  "version": "1.0",
+  "timestamp": "2024-01-15T12:00:00.000Z",
+  "objectCount": 4,
+  "cadObjects": {
+    "metadata": {
+      "version": 4.6,
+      "type": "Object",
+      "generator": "Object3D.toJSON"
+    },
+    "geometries": [
+      {
+        "uuid": "sketch-rect-geo",
+        "type": "ShapeGeometry",
+        "shapes": []
+      },
+      {
+        "uuid": "sketch-circle-geo", 
+        "type": "ShapeGeometry",
+        "shapes": []
+      },
+      {
+        "uuid": "extruded-rect-geo",
+        "type": "ExtrudeGeometry",
+        "shapes": [],
+        "options": {
+          "depth": 2,
+          "bevelEnabled": false
+        }
+      },
+      {
+        "uuid": "extruded-circle-geo",
+        "type": "ExtrudeGeometry", 
+        "shapes": [],
+        "options": {
+          "depth": 1.5,
+          "bevelEnabled": false
+        }
+      }
+    ],
+    "materials": [
+      {
+        "uuid": "sketch-mat-1",
+        "type": "MeshStandardMaterial",
+        "color": 9349807,
+        "side": 2
+      },
+      {
+        "uuid": "sketch-mat-2",
+        "type": "MeshStandardMaterial",
+        "color": 13353171,
+        "side": 2
+      },
+      {
+        "uuid": "extruded-mat-1",
+        "type": "MeshStandardMaterial",
+        "color": 9349807,
+        "metalness": 0.1,
+        "roughness": 0.3
+      },
+      {
+        "uuid": "extruded-mat-2",
+        "type": "MeshStandardMaterial",
+        "color": 13353171,
+        "metalness": 0.1,
+        "roughness": 0.3
+      }
+    ],
+    "object": {
+      "uuid": "sketch-scene",
+      "type": "Scene", 
+      "children": [
+        {
+          "uuid": "flat-rectangle",
+          "type": "Mesh",
+          "geometry": "sketch-rect-geo",
+          "material": "sketch-mat-1",
+          "matrix": [1,0,0,0,0,0,-1,0,0,1,0,0,-3,0.01,0,1],
+          "userData": {
+            "cadType": "sketch",
+            "sketchType": "rectangle",
+            "width": 2.5,
+            "height": 1.5,
+            "id": 3001,
+            "name": "Rectangle Sketch"
+          }
+        },
+        {
+          "uuid": "flat-circle",
+          "type": "Mesh",
+          "geometry": "sketch-circle-geo",
+          "material": "sketch-mat-2", 
+          "matrix": [1,0,0,0,0,0,-1,0,0,1,0,0,3,0.01,0,1],
+          "userData": {
+            "cadType": "sketch",
+            "sketchType": "circle",
+            "radius": 1.2,
+            "center": {"x": 3, "y": 0, "z": 0},
+            "id": 3002,
+            "name": "Circle Sketch"
+          }
+        },
+        {
+          "uuid": "extruded-rectangle",
+          "type": "Mesh",
+          "geometry": "extruded-rect-geo",
+          "material": "extruded-mat-1",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,0,-1,0,0,1,0,0,-3,1,3,1],
+          "userData": {
+            "cadType": "extruded",
+            "originalSketch": {
+              "sketchType": "rectangle",
+              "width": 2.5,
+              "height": 1.5,
+              "id": 3001
+            },
+            "height": 2,
+            "id": 3003,
+            "name": "Extruded Rectangle"
+          }
+        },
+        {
+          "uuid": "extruded-circle",
+          "type": "Mesh",
+          "geometry": "extruded-circle-geo",
+          "material": "extruded-mat-2",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,0,-1,0,0,1,0,0,3,0.75,-3,1],
+          "userData": {
+            "cadType": "extruded",
+            "originalSketch": {
+              "sketchType": "circle", 
+              "radius": 1.2,
+              "center": {"x": 3, "y": 0, "z": 0},
+              "id": 3002
+            },
+            "height": 1.5,
+            "id": 3004,
+            "name": "Extruded Circle"
+          }
+        }
+      ]
+    }
+  }
+}

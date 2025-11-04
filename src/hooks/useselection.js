@@ -156,7 +156,9 @@ const useSelection = (camera, scene, canvas, transformControls) => {
 
           // Attach transform controls
           if (transformControls?.attachTransformControls) {
-            transformControls.attachTransformControls(object);
+            setTimeout(() => {
+              transformControls.attachTransformControls(object);
+            }, 100);
           }
 
           setSelected({ 

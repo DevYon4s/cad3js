@@ -79,17 +79,26 @@ const useThree = (canvasRef) => {
     canvasRef.current.addEventListener('wheel', onWheel);
     
     // Initialize Transform Controls
-    const transformControls = new TransformControls(cameraRef.current, renderer.domElement);
-    transformControls.setMode('translate'); // Default to translate mode
-    transformControls.setSize(0.8); // Make gizmos appropriately sized
-    transformControls.addEventListener('change', () => {
-      // Trigger re-render when transform changes
-    });
-    transformControls.addEventListener('dragging-changed', (event) => {
-      controlsEnabledRef.current = !event.value;
-    });
-    sceneRef.current.add(transformControls);
-    transformControlsRef.current = transformControls;
+    try {
+      const transformControls = new TransformControls(cameraRef.current, renderer.domElement);
+      transformControls.setMode('translate'); // Default to translate mode
+      transformControls.setSize(1.5); // Make gizmos larger and more visible
+      transformControls.visible = false; // Hide by default
+      
+      transformControls.addEventListener('change', () => {
+        // Trigger re-render when transform changes
+      });
+      
+      transformControls.addEventListener('dragging-changed', (event) => {
+        controlsEnabledRef.current = !event.value;
+      });
+      
+      // Add to scene
+      sceneRef.current.add(transformControls);
+      transformControlsRef.current = transformControls;
+    } catch (error) {
+      console.error('Failed to initialize TransformControls:', error);
+    }
 
     // Render loop
     const animate = () => {
@@ -133,6 +142,9 @@ const useThree = (canvasRef) => {
         rendererRef.current.dispose();
       }
       if (transformControlsRef.current) {
+        if (transformControlsRef.current.object) {
+          transformControlsRef.current.detach();
+        }
         sceneRef.current.remove(transformControlsRef.current);
         transformControlsRef.current.dispose();
       }
@@ -141,13 +153,23 @@ const useThree = (canvasRef) => {
 
   const attachTransformControls = (object) => {
     if (transformControlsRef.current && object) {
+      console.log('Attaching transform controls to:', object);
+      // Detach any previously attached object
+      if (transformControlsRef.current.object) {
+        transformControlsRef.current.detach();
+      }
+      // Attach the new object
       transformControlsRef.current.attach(object);
+      transformControlsRef.current.visible = true;
+      transformControlsRef.current.enabled = true;
+      console.log('Transform controls attached, visible:', transformControlsRef.current.visible);
     }
   };
   
   const detachTransformControls = () => {
     if (transformControlsRef.current) {
       transformControlsRef.current.detach();
+      transformControlsRef.current.visible = false;
     }
   };
   

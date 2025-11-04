@@ -7,6 +7,7 @@ import useSketch from './hooks/usesketch';
 import CadToolbar from './components/cadtoolbar';
 import PropertyPanel from './components/propertypanel';
 import SketchPanel from './components/SketchPanel';
+import ImportExportPanel from './components/ImportExportPanel';
 import DimensionOverlay from './components/DimensionOverlay';
 import TopNav from './components/TopNav';
 import './App.css';
@@ -101,6 +102,11 @@ function App() {
     const newSnapState = sketch.toggleSnapToGrid();
     setSnapToGrid(newSnapState);
   };
+  
+  const handleImportComplete = (result) => {
+    console.log('Import completed:', result);
+    // Force re-render or update state if needed
+  };
 
   return (
     <div className="App">
@@ -124,6 +130,10 @@ function App() {
           />
         </div>
         <div className="right-panel">
+          <ImportExportPanel 
+            scene={scene}
+            onImportComplete={handleImportComplete}
+          />
           {sketch.isSketchMode && (
             <SketchPanel
               completedSketches={sketch.completedSketches}

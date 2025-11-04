@@ -1,0 +1,111 @@
+{
+  "version": "1.0",
+  "timestamp": "2024-01-15T10:30:00.000Z",
+  "objectCount": 3,
+  "cadObjects": {
+    "metadata": {
+      "version": 4.6,
+      "type": "Object",
+      "generator": "Object3D.toJSON"
+    },
+    "geometries": [
+      {
+        "uuid": "box-geo-1",
+        "type": "BoxGeometry",
+        "width": 1.5,
+        "height": 1.5,
+        "depth": 1.5
+      },
+      {
+        "uuid": "sphere-geo-1", 
+        "type": "SphereGeometry",
+        "radius": 0.8,
+        "widthSegments": 32,
+        "heightSegments": 16
+      },
+      {
+        "uuid": "cylinder-geo-1",
+        "type": "CylinderGeometry",
+        "radiusTop": 0.7,
+        "radiusBottom": 0.7,
+        "height": 1.8,
+        "radialSegments": 32
+      }
+    ],
+    "materials": [
+      {
+        "uuid": "box-mat-1",
+        "type": "MeshStandardMaterial",
+        "color": 9349807,
+        "metalness": 0.1,
+        "roughness": 0.3
+      },
+      {
+        "uuid": "sphere-mat-1",
+        "type": "MeshStandardMaterial", 
+        "color": 13353171,
+        "metalness": 0.1,
+        "roughness": 0.3
+      },
+      {
+        "uuid": "cylinder-mat-1",
+        "type": "MeshStandardMaterial",
+        "color": 15717847,
+        "metalness": 0.1,
+        "roughness": 0.3
+      }
+    ],
+    "object": {
+      "uuid": "scene-root",
+      "type": "Scene",
+      "children": [
+        {
+          "uuid": "box-1",
+          "type": "Mesh",
+          "geometry": "box-geo-1",
+          "material": "box-mat-1",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-2,0,0,1],
+          "userData": {
+            "cadType": "box",
+            "originalColor": 9349807,
+            "size": 1.5,
+            "id": 1001
+          }
+        },
+        {
+          "uuid": "sphere-1", 
+          "type": "Mesh",
+          "geometry": "sphere-geo-1",
+          "material": "sphere-mat-1",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+          "userData": {
+            "cadType": "sphere",
+            "originalColor": 13353171,
+            "radius": 0.8,
+            "id": 1002
+          }
+        },
+        {
+          "uuid": "cylinder-1",
+          "type": "Mesh", 
+          "geometry": "cylinder-geo-1",
+          "material": "cylinder-mat-1",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,2,0,0,1],
+          "userData": {
+            "cadType": "cylinder",
+            "originalColor": 15717847,
+            "radius": 0.7,
+            "height": 1.8,
+            "id": 1003
+          }
+        }
+      ]
+    }
+  }
+}

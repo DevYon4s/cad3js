@@ -1,8 +1,14 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import './PropertyPanel.css';
 
 const PropertyPanel = ({ selected, transformControls }) => {
+  const [currentTransformMode, setCurrentTransformMode] = useState('translate');
+  
+  const handleTransformModeChange = (mode) => {
+    setCurrentTransformMode(mode);
+    transformControls?.setTransformMode(mode);
+  };
   if (!selected) {
     return (
       <div className="property-panel">
@@ -53,29 +59,33 @@ const PropertyPanel = ({ selected, transformControls }) => {
             <h3>Transform Controls</h3>
             <div className="transform-buttons">
               <button 
-                className="transform-btn active"
-                onClick={() => transformControls?.setTransformMode('translate')}
-                title="Move (G)"
+                className={`transform-btn ${currentTransformMode === 'translate' ? 'active' : ''}`}
+                onClick={() => handleTransformModeChange('translate')}
+                title="Move - Drag the colored arrows"
               >
                 Move
               </button>
               <button 
-                className="transform-btn"
-                onClick={() => transformControls?.setTransformMode('rotate')}
-                title="Rotate (R)"
+                className={`transform-btn ${currentTransformMode === 'rotate' ? 'active' : ''}`}
+                onClick={() => handleTransformModeChange('rotate')}
+                title="Rotate - Drag the colored rings"
               >
                 Rotate
               </button>
               <button 
-                className="transform-btn"
-                onClick={() => transformControls?.setTransformMode('scale')}
-                title="Scale (S)"
+                className={`transform-btn ${currentTransformMode === 'scale' ? 'active' : ''}`}
+                onClick={() => handleTransformModeChange('scale')}
+                title="Scale - Drag the colored cubes"
               >
                 Scale
               </button>
             </div>
             <div className="transform-help">
-              <p>Click and drag the gizmo handles to transform the selected object.</p>
+              <p><strong>Current Mode:</strong> {currentTransformMode.charAt(0).toUpperCase() + currentTransformMode.slice(1)}</p>
+              <p>Click and drag the colored gizmo handles to transform the selected object.</p>
+              {currentTransformMode === 'translate' && <p>• <strong>Red:</strong> X-axis • <strong>Green:</strong> Y-axis • <strong>Blue:</strong> Z-axis</p>}
+              {currentTransformMode === 'rotate' && <p>• <strong>Red:</strong> X-rotation • <strong>Green:</strong> Y-rotation • <strong>Blue:</strong> Z-rotation</p>}
+              {currentTransformMode === 'scale' && <p>• <strong>Red:</strong> X-scale • <strong>Green:</strong> Y-scale • <strong>Blue:</strong> Z-scale</p>}
             </div>
           </div>
           <div className="property-group">
