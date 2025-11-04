@@ -46,18 +46,19 @@
 }
 
 .snap-button.active {
-  background-color: #007bff;
+  background-color: #495057;
   color: white;
-  border-color: #007bff;
+  border-color: #495057;
 }
 
 .clear-button {
-  color: #dc3545;
+  color: #6c757d;
 }
 
 .clear-button:hover {
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  color: #495057;
 }
 
 .sketches-list h4 {
@@ -96,9 +97,9 @@
 }
 
 .sketch-item.selected {
-  background-color: #e3f2fd;
-  border-color: #2196f3;
-  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+  background-color: #f8f9fa;
+  border-color: #495057;
+  box-shadow: 0 0 0 2px rgba(73, 80, 87, 0.2);
 }
 
 .sketch-info {
@@ -167,8 +168,8 @@
 
 .input-group input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: #495057;
+  box-shadow: 0 0 0 2px rgba(73, 80, 87, 0.25);
 }
 
 .extrude-button {
@@ -177,7 +178,7 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background-color: #28a745;
+  background-color: #495057;
   color: white;
   border: none;
   border-radius: 6px;
@@ -187,7 +188,7 @@
 }
 
 .extrude-button:hover {
-  background-color: #218838;
+  background-color: #343a40;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

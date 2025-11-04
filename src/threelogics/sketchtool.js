@@ -184,7 +184,7 @@ class SketchTool {
     
     const geometry = new THREE.PlaneGeometry(width, height);
     const material = new THREE.MeshBasicMaterial({ 
-      color: 0x4488ff, 
+      color: 0x6c757d, 
       transparent: true, 
       opacity: 0.3,
       side: THREE.DoubleSide
@@ -208,7 +208,7 @@ class SketchTool {
     
     const geometry = new THREE.CircleGeometry(radius, 32);
     const material = new THREE.MeshBasicMaterial({ 
-      color: 0x44ff88, 
+      color: 0x6c757d, 
       transparent: true, 
       opacity: 0.3,
       side: THREE.DoubleSide

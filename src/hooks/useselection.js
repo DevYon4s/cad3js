@@ -34,7 +34,12 @@ const useSelection = (camera, scene, canvas) => {
     const onClick = (event) => {
       raycaster.current.setFromCamera(mouse.current, camera);
       const intersects = raycaster.current.intersectObjects(
-        scene.children.filter(child => child.userData.cadType), 
+        scene.children.filter(child => 
+          child.userData.cadType === 'box' || 
+          child.userData.cadType === 'sphere' || 
+          child.userData.cadType === 'cylinder' ||
+          child.userData.cadType === 'extruded'
+        ), 
         false
       );
 

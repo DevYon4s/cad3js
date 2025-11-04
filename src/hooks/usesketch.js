@@ -55,8 +55,16 @@ const useSketch = (scene, camera, renderer) => {
       const extrudedMesh = sketchToolRef.current.extrudeSketch(sketchMesh, height);
       if (extrudedMesh) {
         scene.add(extrudedMesh);
-        // Remove the original sketch from scene
+        // Remove the original sketch from scene and sketch group
         scene.remove(sketchMesh);
+        sketchToolRef.current.sketchGroup.remove(sketchMesh);
+        // Remove from completed sketches array
+        const sketchIndex = sketchToolRef.current.completedSketches.findIndex(
+          sketch => sketch.mesh.userData.id === sketchMesh.userData.id
+        );
+        if (sketchIndex !== -1) {
+          sketchToolRef.current.completedSketches.splice(sketchIndex, 1);
+        }
         updateCompletedSketches();
         return extrudedMesh;
       }

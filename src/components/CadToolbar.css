@@ -39,14 +39,14 @@
 }
 
 .toolbar-group > button.active {
-  background-color: #007bff;
+  background-color: #495057;
   color: white;
-  border-color: #007bff;
+  border-color: #495057;
 }
 
 .toolbar-group > button.active:hover {
-  background-color: #0056b3;
-  border-color: #0056b3;
+  background-color: #343a40;
+  border-color: #343a40;
 }
 
 .shape-dropdown {
@@ -134,12 +134,12 @@
 }
 
 .sketch-tools button.active {
-  background-color: #28a745;
+  background-color: #6c757d;
   color: white;
-  border-color: #28a745;
+  border-color: #6c757d;
 }
 
 .sketch-tools button.active:hover {
-  background-color: #218838;
-  border-color: #218838;
+  background-color: #5a6268;
+  border-color: #5a6268;
 }
