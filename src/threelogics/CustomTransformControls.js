@@ -12,6 +12,8 @@ class CustomTransformControls extends THREE.Object3D {
     this.visible = false;
     this.onEnableCameraControls = null;
     this.onDisableCameraControls = null;
+    this.onTransformStart = null;
+    this.onTransformEnd = null;
     
     this.gizmo = new THREE.Group();
     this.add(this.gizmo);
@@ -191,6 +193,11 @@ class CustomTransformControls extends THREE.Object3D {
       this.isDragging = true;
       this.selectedAxis = this.findAxis(intersects[0].object);
       
+      // Call transform start callback
+      if (this.onTransformStart && this.object) {
+        this.onTransformStart(this.object);
+      }
+      
       // Prevent camera controls and object selection
       event.stopPropagation();
       event.preventDefault();
@@ -248,6 +255,11 @@ class CustomTransformControls extends THREE.Object3D {
   
   onMouseUp() {
     if (this.isDragging) {
+      // Call transform end callback before resetting state
+      if (this.onTransformEnd && this.object) {
+        this.onTransformEnd(this.object);
+      }
+      
       this.isDragging = false;
       this.selectedAxis = null;
       

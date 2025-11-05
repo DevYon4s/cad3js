@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import CustomTransformControls from '../threelogics/CustomTransformControls';
 
-const useThree = (canvasRef) => {
+const useThree = (canvasRef, undoRedo = null) => {
   const sceneRef = useRef(new THREE.Scene());
   const cameraRef = useRef(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
   const rendererRef = useRef(null);
@@ -83,6 +83,33 @@ const useThree = (canvasRef) => {
       const transformControls = new CustomTransformControls(cameraRef.current, renderer.domElement);
       transformControls.setMode('translate'); // Default to translate mode
       transformControls.visible = false; // Hide by default
+      
+      // Set up history tracking for transform operations
+      if (undoRedo) {
+        transformControls.onTransformStart = (object) => {
+          transformControls._initialState = {
+            position: object.position.clone(),
+            rotation: object.rotation.clone(),
+            scale: object.scale.clone()
+          };
+        };
+        
+        transformControls.onTransformEnd = (object) => {
+          if (transformControls._initialState) {
+            undoRedo.saveState({
+              action: 'transform',
+              objectId: object.userData.id,
+              mode: transformControls.mode,
+              before: transformControls._initialState,
+              after: {
+                position: object.position.clone(),
+                rotation: object.rotation.clone(),
+                scale: object.scale.clone()
+              }
+            }, `Transform ${transformControls.mode}`);
+          }
+        };
+      }
       
       // Add to scene
       sceneRef.current.add(transformControls);

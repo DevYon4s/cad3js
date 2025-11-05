@@ -110,31 +110,11 @@ The application includes three test JSON files to demonstrate import/export func
 - **Content**: Simple box, sphere, and cylinder
 - **Purpose**: Test basic object import/export
 - **Features**: Standard materials, basic positioning
-
-#### 2. **Complex Scene Test** (`test-scene-complex.json`)
-- **Content**: 6 objects with advanced transforms
-- **Purpose**: Test scaling, rotation, and complex positioning
-- **Features**: Named objects, varied materials, transform matrices
-
-#### 3. **Sketches & Extrusions Test** (`test-scene-sketches.json`)
-- **Content**: 2D sketches and their extruded 3D versions
-- **Purpose**: Test sketch import and extrusion data preservation
-- **Features**: Mixed 2D/3D objects, extrusion metadata
-
-### Testing Instructions
-1. **Download** any test file from the project root
-2. **Click "Import Scene"** in the right panel
-3. **Select** the downloaded JSON file
-4. **Verify** objects appear with correct properties
-5. **Test Selection** - click objects to see transform gizmos
-6. **Test Export** - export the scene and compare JSON structure
-
-### Custom Test File Template
 ```json
 {
   "version": "1.0",
   "timestamp": "2024-01-15T10:30:00.000Z",
-  "objectCount": 0,
+  "objectCount": 3,
   "cadObjects": {
     "metadata": {
       "version": 4.6,
@@ -142,21 +122,462 @@ The application includes three test JSON files to demonstrate import/export func
       "generator": "Object3D.toJSON"
     },
     "geometries": [
-      // Add your geometries here
+      {
+        "uuid": "box-geo-1",
+        "type": "BoxGeometry",
+        "width": 1.5,
+        "height": 1.5,
+        "depth": 1.5
+      },
+      {
+        "uuid": "sphere-geo-1", 
+        "type": "SphereGeometry",
+        "radius": 0.8,
+        "widthSegments": 32,
+        "heightSegments": 16
+      },
+      {
+        "uuid": "cylinder-geo-1",
+        "type": "CylinderGeometry",
+        "radiusTop": 0.7,
+        "radiusBottom": 0.7,
+        "height": 1.8,
+        "radialSegments": 32
+      }
     ],
     "materials": [
-      // Add your materials here  
+      {
+        "uuid": "box-mat-1",
+        "type": "MeshStandardMaterial",
+        "color": 9349807,
+        "metalness": 0.1,
+        "roughness": 0.3
+      },
+      {
+        "uuid": "sphere-mat-1",
+        "type": "MeshStandardMaterial", 
+        "color": 13353171,
+        "metalness": 0.1,
+        "roughness": 0.3
+      },
+      {
+        "uuid": "cylinder-mat-1",
+        "type": "MeshStandardMaterial",
+        "color": 15717847,
+        "metalness": 0.1,
+        "roughness": 0.3
+      }
     ],
     "object": {
-      "uuid": "custom-scene",
+      "uuid": "scene-root",
       "type": "Scene",
       "children": [
-        // Add your objects here
+        {
+          "uuid": "box-1",
+          "type": "Mesh",
+          "geometry": "box-geo-1",
+          "material": "box-mat-1",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-2,0,0,1],
+          "userData": {
+            "cadType": "box",
+            "originalColor": 9349807,
+            "size": 1.5,
+            "id": 1001
+          }
+        },
+        {
+          "uuid": "sphere-1", 
+          "type": "Mesh",
+          "geometry": "sphere-geo-1",
+          "material": "sphere-mat-1",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+          "userData": {
+            "cadType": "sphere",
+            "originalColor": 13353171,
+            "radius": 0.8,
+            "id": 1002
+          }
+        },
+        {
+          "uuid": "cylinder-1",
+          "type": "Mesh", 
+          "geometry": "cylinder-geo-1",
+          "material": "cylinder-mat-1",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,2,0,0,1],
+          "userData": {
+            "cadType": "cylinder",
+            "originalColor": 15717847,
+            "radius": 0.7,
+            "height": 1.8,
+            "id": 1003
+          }
+        }
       ]
     }
   }
 }
+
 ```
+
+#### 2. **Complex Scene Test** (`test-scene-complex.json`)
+- **Content**: 6 objects with advanced transforms
+- **Purpose**: Test scaling, rotation, and complex positioning
+- **Features**: Named objects, varied materials, transform matrices
+```json
+{
+  "version": "1.0",
+  "timestamp": "2024-01-15T11:00:00.000Z",
+  "objectCount": 6,
+  "cadObjects": {
+    "metadata": {
+      "version": 4.6,
+      "type": "Object",
+      "generator": "Object3D.toJSON"
+    },
+    "geometries": [
+      {
+        "uuid": "box-geo-2",
+        "type": "BoxGeometry",
+        "width": 2,
+        "height": 0.5,
+        "depth": 3
+      },
+      {
+        "uuid": "sphere-geo-2",
+        "type": "SphereGeometry",
+        "radius": 0.6,
+        "widthSegments": 32,
+        "heightSegments": 16
+      },
+      {
+        "uuid": "cylinder-geo-2",
+        "type": "CylinderGeometry",
+        "radiusTop": 0.3,
+        "radiusBottom": 0.8,
+        "height": 2.5,
+        "radialSegments": 32
+      },
+      {
+        "uuid": "extruded-geo-1",
+        "type": "ExtrudeGeometry",
+        "shapes": [],
+        "options": {
+          "depth": 1.2,
+          "bevelEnabled": false
+        }
+      }
+    ],
+    "materials": [
+      {
+        "uuid": "mat-red",
+        "type": "MeshStandardMaterial",
+        "color": 16711680,
+        "metalness": 0.2,
+        "roughness": 0.4
+      },
+      {
+        "uuid": "mat-green",
+        "type": "MeshStandardMaterial",
+        "color": 65280,
+        "metalness": 0.1,
+        "roughness": 0.3
+      },
+      {
+        "uuid": "mat-blue",
+        "type": "MeshStandardMaterial",
+        "color": 255,
+        "metalness": 0.3,
+        "roughness": 0.2
+      },
+      {
+        "uuid": "mat-yellow",
+        "type": "MeshStandardMaterial",
+        "color": 16776960,
+        "metalness": 0.1,
+        "roughness": 0.5
+      }
+    ],
+    "object": {
+      "uuid": "complex-scene",
+      "type": "Scene",
+      "children": [
+        {
+          "uuid": "platform",
+          "type": "Mesh",
+          "geometry": "box-geo-2",
+          "material": "mat-red",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1,0,1],
+          "userData": {
+            "cadType": "box",
+            "originalColor": 16711680,
+            "size": [2, 0.5, 3],
+            "id": 2001,
+            "name": "Platform Base"
+          }
+        },
+        {
+          "uuid": "ball-1",
+          "type": "Mesh",
+          "geometry": "sphere-geo-2",
+          "material": "mat-green",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-1.5,0.5,0,1],
+          "userData": {
+            "cadType": "sphere",
+            "originalColor": 65280,
+            "radius": 0.6,
+            "id": 2002,
+            "name": "Green Ball"
+          }
+        },
+        {
+          "uuid": "ball-2",
+          "type": "Mesh",
+          "geometry": "sphere-geo-2", 
+          "material": "mat-blue",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [0.8,0,0,0,0,1.2,0,0,0,0,0.8,0,1.5,0.5,0,1],
+          "userData": {
+            "cadType": "sphere",
+            "originalColor": 255,
+            "radius": 0.6,
+            "id": 2003,
+            "name": "Blue Ball (Scaled)"
+          }
+        },
+        {
+          "uuid": "tower",
+          "type": "Mesh",
+          "geometry": "cylinder-geo-2",
+          "material": "mat-yellow",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,1.5,2,1],
+          "userData": {
+            "cadType": "cylinder",
+            "originalColor": 16776960,
+            "radius": [0.3, 0.8],
+            "height": 2.5,
+            "id": 2004,
+            "name": "Tower"
+          }
+        },
+        {
+          "uuid": "rotated-box",
+          "type": "Mesh",
+          "geometry": "box-geo-2",
+          "material": "mat-blue",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [0.707,-0.707,0,0,0.707,0.707,0,0,0,0,1,0,-2,1,2,1],
+          "userData": {
+            "cadType": "box",
+            "originalColor": 255,
+            "size": [2, 0.5, 3],
+            "id": 2005,
+            "name": "Rotated Platform"
+          }
+        },
+        {
+          "uuid": "small-cylinder",
+          "type": "Mesh",
+          "geometry": "cylinder-geo-2",
+          "material": "mat-green",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [0.5,0,0,0,0,0.3,0,0,0,0,0.5,0,2,0.2,-2,1],
+          "userData": {
+            "cadType": "cylinder", 
+            "originalColor": 65280,
+            "radius": [0.3, 0.8],
+            "height": 2.5,
+            "id": 2006,
+            "name": "Small Cylinder"
+          }
+        }
+      ]
+    }
+  }
+}
+
+```
+
+#### 3. **Sketches & Extrusions Test** (`test-scene-sketches.json`)
+- **Content**: 2D sketches and their extruded 3D versions
+- **Purpose**: Test sketch import and extrusion data preservation
+- **Features**: Mixed 2D/3D objects, extrusion metadata
+```json
+{
+  "version": "1.0",
+  "timestamp": "2024-01-15T12:00:00.000Z",
+  "objectCount": 4,
+  "cadObjects": {
+    "metadata": {
+      "version": 4.6,
+      "type": "Object",
+      "generator": "Object3D.toJSON"
+    },
+    "geometries": [
+      {
+        "uuid": "sketch-rect-geo",
+        "type": "ShapeGeometry",
+        "shapes": []
+      },
+      {
+        "uuid": "sketch-circle-geo", 
+        "type": "ShapeGeometry",
+        "shapes": []
+      },
+      {
+        "uuid": "extruded-rect-geo",
+        "type": "ExtrudeGeometry",
+        "shapes": [],
+        "options": {
+          "depth": 2,
+          "bevelEnabled": false
+        }
+      },
+      {
+        "uuid": "extruded-circle-geo",
+        "type": "ExtrudeGeometry", 
+        "shapes": [],
+        "options": {
+          "depth": 1.5,
+          "bevelEnabled": false
+        }
+      }
+    ],
+    "materials": [
+      {
+        "uuid": "sketch-mat-1",
+        "type": "MeshStandardMaterial",
+        "color": 9349807,
+        "side": 2
+      },
+      {
+        "uuid": "sketch-mat-2",
+        "type": "MeshStandardMaterial",
+        "color": 13353171,
+        "side": 2
+      },
+      {
+        "uuid": "extruded-mat-1",
+        "type": "MeshStandardMaterial",
+        "color": 9349807,
+        "metalness": 0.1,
+        "roughness": 0.3
+      },
+      {
+        "uuid": "extruded-mat-2",
+        "type": "MeshStandardMaterial",
+        "color": 13353171,
+        "metalness": 0.1,
+        "roughness": 0.3
+      }
+    ],
+    "object": {
+      "uuid": "sketch-scene",
+      "type": "Scene", 
+      "children": [
+        {
+          "uuid": "flat-rectangle",
+          "type": "Mesh",
+          "geometry": "sketch-rect-geo",
+          "material": "sketch-mat-1",
+          "matrix": [1,0,0,0,0,0,-1,0,0,1,0,0,-3,0.01,0,1],
+          "userData": {
+            "cadType": "sketch",
+            "sketchType": "rectangle",
+            "width": 2.5,
+            "height": 1.5,
+            "id": 3001,
+            "name": "Rectangle Sketch"
+          }
+        },
+        {
+          "uuid": "flat-circle",
+          "type": "Mesh",
+          "geometry": "sketch-circle-geo",
+          "material": "sketch-mat-2", 
+          "matrix": [1,0,0,0,0,0,-1,0,0,1,0,0,3,0.01,0,1],
+          "userData": {
+            "cadType": "sketch",
+            "sketchType": "circle",
+            "radius": 1.2,
+            "center": {"x": 3, "y": 0, "z": 0},
+            "id": 3002,
+            "name": "Circle Sketch"
+          }
+        },
+        {
+          "uuid": "extruded-rectangle",
+          "type": "Mesh",
+          "geometry": "extruded-rect-geo",
+          "material": "extruded-mat-1",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,0,-1,0,0,1,0,0,-3,1,3,1],
+          "userData": {
+            "cadType": "extruded",
+            "originalSketch": {
+              "sketchType": "rectangle",
+              "width": 2.5,
+              "height": 1.5,
+              "id": 3001
+            },
+            "height": 2,
+            "id": 3003,
+            "name": "Extruded Rectangle"
+          }
+        },
+        {
+          "uuid": "extruded-circle",
+          "type": "Mesh",
+          "geometry": "extruded-circle-geo",
+          "material": "extruded-mat-2",
+          "castShadow": true,
+          "receiveShadow": true,
+          "matrix": [1,0,0,0,0,0,-1,0,0,1,0,0,3,0.75,-3,1],
+          "userData": {
+            "cadType": "extruded",
+            "originalSketch": {
+              "sketchType": "circle", 
+              "radius": 1.2,
+              "center": {"x": 3, "y": 0, "z": 0},
+              "id": 3002
+            },
+            "height": 1.5,
+            "id": 3004,
+            "name": "Extruded Circle"
+          }
+        }
+      ]
+    }
+  }
+}
+
+```
+
+### Testing Instructions
+1. **Download** any test file from the project root or create a json file and copy the examples above.
+2. **Click "Import Scene"** in the right panel
+3. **Select** the downloaded JSON file
+4. **Verify** objects appear with correct properties
+5. **Test Selection** - click objects to see transform gizmos
+6. **Test Export** - export the scene and compare JSON structure
+
+### Custom Test File Template
+
 
 ## ⌨️ Keyboard Shortcuts
 
@@ -221,36 +642,15 @@ src/
 - **Camera Interference**: Transform operations may briefly affect camera controls
 - **Multi-selection**: Transform controls work on single objects only
 
-### Sketch Mode
-- **Complex Shapes**: Only rectangle and circle primitives supported
-- **Curve Editing**: No bezier or spline curve support
-- **Constraint System**: No geometric constraints or dimensions
-
-### Import/Export
-- **File Size**: Large scenes may have performance impact
-- **Texture Support**: Materials export but textures are not preserved
-- **Animation Data**: No support for animations or keyframes
 
 ### Performance
 - **Object Count**: Performance degrades with 100+ objects
 - **Real-time Updates**: Property panel updates may lag with complex selections
-- **Memory Usage**: No automatic cleanup of disposed geometries
 
-### Browser Compatibility
-- **WebGL Required**: Needs modern browser with WebGL support
-- **File API**: Import functionality requires File API support
-- **ES6 Features**: Requires modern JavaScript engine
+
 
 ### Selection System
 - **Nested Objects**: Groups and nested hierarchies have limited support
 - **Precision**: Edge selection accuracy depends on geometry complexity
 - **Visual Feedback**: Selection highlights may not render correctly on all geometries
 
-## 🔮 Future Enhancements
-
-- **Parametric Modeling**: Constraint-based design system
-- **Advanced Sketching**: Splines, arcs, and complex curves
-- **Assembly Mode**: Multi-part assemblies with relationships
-- **Material Editor**: Advanced material and texture editing
-- **Measurement Tools**: Dimension and annotation tools
-- **Export Formats**: STL, OBJ, and other 3D file formats

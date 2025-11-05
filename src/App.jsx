@@ -16,11 +16,11 @@ import './App.css';
 
 function App() {
   const canvasRef = useRef();
-  const { scene, camera, renderer, attachTransformControls, detachTransformControls, setTransformMode, enableCameraControls, disableCameraControls } = useThree(canvasRef);
+  const undoRedo = useUndoRedo();
+  const { scene, camera, renderer, attachTransformControls, detachTransformControls, setTransformMode, enableCameraControls, disableCameraControls } = useThree(canvasRef, undoRedo);
   const transformControls = { attachTransformControls, detachTransformControls, setTransformMode };
   const selected = useSelection(camera, scene, canvasRef.current, transformControls);
   const sketch = useSketch(scene, camera, renderer);
-  const undoRedo = useUndoRedo();
   
   // Set camera control callbacks for sketch tool
   useEffect(() => {
@@ -58,6 +58,14 @@ function App() {
       shape.position.set(positionX, 0, positionZ);
       scene.add(shape);
       setShapeCount(shapeCount + 1);
+      
+      // Save to history
+      undoRedo.saveState({ 
+        action: 'add_shape', 
+        shapeType, 
+        position: { x: positionX, y: 0, z: positionZ },
+        shapeId: shape.userData.id
+      }, `Add ${shapeType}`);
     }
   };
 
@@ -115,6 +123,7 @@ function App() {
     const prevState = undoRedo.undo();
     if (prevState) {
       console.log('Undo:', prevState.action);
+      applyHistoryState(prevState.state, 'undo');
     }
   };
 
@@ -122,6 +131,55 @@ function App() {
     const nextState = undoRedo.redo();
     if (nextState) {
       console.log('Redo:', nextState.action);
+      applyHistoryState(nextState.state, 'redo');
+    }
+  };
+  
+  const applyHistoryState = (state, direction) => {
+    if (!state) return;
+    
+    if (state.action === 'add_shape') {
+      if (direction === 'undo') {
+        // Remove the shape
+        const objectToRemove = scene.children.find(child => 
+          child.userData && child.userData.id === state.shapeId
+        );
+        if (objectToRemove) {
+          scene.remove(objectToRemove);
+          setShapeCount(prev => Math.max(0, prev - 1));
+        }
+      } else {
+        // Re-add the shape
+        let shape;
+        switch (state.shapeType) {
+          case 'box':
+            shape = createBox(1.5);
+            break;
+          case 'sphere':
+            shape = createSphere(0.8);
+            break;
+          case 'cylinder':
+            shape = createCylinder(0.7, 1.8);
+            break;
+        }
+        if (shape) {
+          shape.position.set(state.position.x, state.position.y, state.position.z);
+          shape.userData.id = state.shapeId;
+          scene.add(shape);
+          setShapeCount(prev => prev + 1);
+        }
+      }
+    } else if (state.action === 'transform') {
+      // Find the object and restore its transform
+      const objectToTransform = scene.children.find(child => 
+        child.userData && child.userData.id === state.objectId
+      );
+      if (objectToTransform) {
+        const targetState = direction === 'undo' ? state.before : state.after;
+        objectToTransform.position.copy(targetState.position);
+        objectToTransform.rotation.copy(targetState.rotation);
+        objectToTransform.scale.copy(targetState.scale);
+      }
     }
   };
 
