@@ -48,8 +48,8 @@ const useSelection = (camera, scene, canvas, transformControls, grouping = null)
       if (intersects.length > 0) {
         const { object, point, face } = intersects[0];
 
-        if ((event.ctrlKey || event.metaKey) && !grouping) {
-          // Edge Selection (Ctrl/Cmd + Click)
+        if ((event.ctrlKey || event.metaKey) && event.altKey) {
+          // Edge Selection (Ctrl+Alt + Click)
           if (face) {
             const geometry = object.geometry;
             const vertices = geometry.attributes.position;

@@ -140,9 +140,17 @@ function App() {
   };
   
   const handleUpdateDimension = (selectedItem, newValue) => {
-    // This would require complex geometry manipulation
-    // For now, just log the action
-    console.log('Update dimension:', selectedItem.type, newValue);
+    if (selectedItem.type === 'face' && selectedItem.object) {
+      // Scale the object to match the new face area
+      const currentArea = selectedItem.data.area;
+      const scaleFactor = Math.sqrt(newValue / currentArea);
+      selectedItem.object.scale.multiplyScalar(scaleFactor);
+    } else if (selectedItem.type === 'edge' && selectedItem.object) {
+      // Scale the object to match the new edge length
+      const currentLength = selectedItem.data.edge[0].distanceTo(selectedItem.data.edge[1]);
+      const scaleFactor = newValue / currentLength;
+      selectedItem.object.scale.multiplyScalar(scaleFactor);
+    }
   };
   
   const applyHistoryState = (state, direction) => {

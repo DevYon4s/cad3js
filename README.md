@@ -614,7 +614,8 @@ The application includes three test JSON files to demonstrate import/export func
 |----------|--------|
 | `Click` | Select shape |
 | `Shift+Click` | Select face |
-| `Ctrl+Click` | Select edge or multi-select for grouping |
+| `Ctrl+Click` | Multi-select for grouping |
+| `Ctrl+Alt+Click` | Select edge |
 | `Ctrl+Z` | Undo last action |
 | `Ctrl+Y` | Redo last undone action |
 | `Ctrl+Shift+Z` | Alternative redo |
