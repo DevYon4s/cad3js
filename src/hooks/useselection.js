@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const useSelection = (camera, scene, canvas, transformControls) => {
+const useSelection = (camera, scene, canvas, transformControls, grouping = null) => {
   const [selected, setSelected] = useState(null);
   const raycaster = useRef(new THREE.Raycaster());
   const mouse = useRef(new THREE.Vector2());
@@ -48,7 +48,7 @@ const useSelection = (camera, scene, canvas, transformControls) => {
       if (intersects.length > 0) {
         const { object, point, face } = intersects[0];
 
-        if (event.ctrlKey || event.metaKey) {
+        if ((event.ctrlKey || event.metaKey) && !grouping) {
           // Edge Selection (Ctrl/Cmd + Click)
           if (face) {
             const geometry = object.geometry;
@@ -146,8 +146,22 @@ const useSelection = (camera, scene, canvas, transformControls) => {
               } 
             });
           }
+        } else if ((event.ctrlKey || event.metaKey) && grouping) {
+          // Multi-selection for grouping
+          grouping.addToSelection(object);
+          
+          // Visual feedback for multi-selection
+          originalMaterial.current = object.material;
+          object.material = object.material.clone();
+          object.material.color.setHex(0x00ff00);
+          object.material.transparent = true;
+          object.material.opacity = 0.8;
         } else {
           // Shape Selection (Normal Click)
+          if (grouping) {
+            grouping.clearSelection();
+          }
+          
           originalMaterial.current = object.material;
           object.material = object.material.clone();
           object.material.color.setHex(0x6c757d);
@@ -177,6 +191,9 @@ const useSelection = (camera, scene, canvas, transformControls) => {
         // Detach transform controls when nothing is selected
         if (transformControls?.detachTransformControls) {
           transformControls.detachTransformControls();
+        }
+        if (grouping) {
+          grouping.clearSelection();
         }
         setSelected(null);
       }

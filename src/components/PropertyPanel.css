@@ -69,8 +69,8 @@
 
 .property-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 8px;
   margin-bottom: 0.75rem;
   padding: 0.5rem 0;
   border-bottom: 1px solid #e9ecef;
@@ -91,9 +91,7 @@
 .property-item span {
   font-size: 13px;
   color: #6c757d;
-  text-align: right;
   flex: 1;
-  margin-left: 1rem;
 }
 
 .selection-type {
@@ -163,4 +161,76 @@
   font-size: 0.8rem;
   color: #6c757d;
   line-height: 1.4;
+}
+.property-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-dimension-btn {
+  background: none;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-dimension-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #495057;
+  color: #495057;
+}
+
+.property-panel.draggable {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #ccc;
+}
+
+.property-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: grab;
+  user-select: none;
+}
+
+.property-header:active {
+  cursor: grabbing;
+}
+
+.property-header h2 {
+  margin: 0;
+  font-size: 14px;
+  flex: 1;
+  text-align: center;
+}
+
+.drag-handle {
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.close-btn:hover {
+  background-color: #e9ecef;
+  color: #495057;
 }

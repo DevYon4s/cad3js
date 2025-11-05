@@ -5,12 +5,14 @@ import { createBox, createSphere, createCylinder } from './threelogics/primitive
 import useSelection from './hooks/useselection';
 import useSketch from './hooks/usesketch';
 import useUndoRedo from './hooks/useUndoRedo';
+import useGrouping from './hooks/useGrouping';
 import CadToolbar from './components/cadtoolbar';
 import PropertyPanel from './components/propertypanel';
 import SketchPanel from './components/SketchPanel';
 import ImportExportPanel from './components/ImportExportPanel';
 import UndoRedoPanel from './components/UndoRedoPanel';
 import DimensionOverlay from './components/DimensionOverlay';
+import GroupPanel from './components/GroupPanel';
 import TopNav from './components/TopNav';
 import './App.css';
 
@@ -19,7 +21,8 @@ function App() {
   const undoRedo = useUndoRedo();
   const { scene, camera, renderer, attachTransformControls, detachTransformControls, setTransformMode, enableCameraControls, disableCameraControls } = useThree(canvasRef, undoRedo);
   const transformControls = { attachTransformControls, detachTransformControls, setTransformMode };
-  const selected = useSelection(camera, scene, canvasRef.current, transformControls);
+  const grouping = useGrouping(scene);
+  const selected = useSelection(camera, scene, canvasRef.current, transformControls, grouping);
   const sketch = useSketch(scene, camera, renderer);
   
   // Set camera control callbacks for sketch tool
@@ -32,6 +35,7 @@ function App() {
   const [shapeCount, setShapeCount] = useState(0);
   const [lightsAdded, setLightsAdded] = useState(false);
   const [snapToGrid, setSnapToGrid] = useState(true);
+  const [showPropertyPanel, setShowPropertyPanel] = useState(true);
 
   const handleAddShape = (shapeType) => {
     let shape;
@@ -135,6 +139,12 @@ function App() {
     }
   };
   
+  const handleUpdateDimension = (selectedItem, newValue) => {
+    // This would require complex geometry manipulation
+    // For now, just log the action
+    console.log('Update dimension:', selectedItem.type, newValue);
+  };
+  
   const applyHistoryState = (state, direction) => {
     if (!state) return;
     
@@ -205,6 +215,9 @@ function App() {
           event.preventDefault();
           handleRedo();
         }
+      } else if (event.key === 'p' || event.key === 'P') {
+        event.preventDefault();
+        setShowPropertyPanel(prev => !prev);
       }
     };
 
@@ -249,6 +262,13 @@ function App() {
             isVisible={sketch.showDimensions}
           />
         </div>
+        <PropertyPanel 
+          selected={selected} 
+          transformControls={transformControls}
+          onUpdateDimension={handleUpdateDimension}
+          isVisible={showPropertyPanel}
+          onClose={() => setShowPropertyPanel(false)}
+        />
         <div className="right-panel">
           <ImportExportPanel 
             scene={scene}
@@ -263,11 +283,18 @@ function App() {
               onClearSketches={sketch.clearAllSketches}
               onToggleSnapToGrid={handleToggleSnapToGrid}
               snapToGrid={snapToGrid}
+              onEditSketch={sketch.startEditingSketch}
+              editingSketch={sketch.editingSketch}
             />
           )}
-          <PropertyPanel 
-            selected={selected} 
-            transformControls={transformControls}
+          <GroupPanel
+            groups={grouping.groups}
+            selectedObjects={grouping.selectedObjects}
+            onCreateGroup={grouping.createGroup}
+            onUngroup={grouping.ungroup}
+            onDeleteGroup={grouping.deleteGroup}
+            onRenameGroup={grouping.renameGroup}
+            onClearSelection={grouping.clearSelection}
           />
         </div>
       </div>

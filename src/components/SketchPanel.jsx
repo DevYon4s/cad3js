@@ -9,7 +9,9 @@ const SketchPanel = ({
   onExtrudeSketch, 
   onClearSketches,
   onToggleSnapToGrid,
-  snapToGrid = true
+  snapToGrid = true,
+  onEditSketch,
+  editingSketch
 }) => {
   const [extrudeHeight, setExtrudeHeight] = useState(1);
 
@@ -72,13 +74,31 @@ const SketchPanel = ({
                     R: {sketch.mesh.userData.radius?.toFixed(2)}
                   </div>
                 )}
+                <div className="sketch-actions">
+                  <button 
+                    className="edit-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEditSketch(sketch.mesh.userData.id);
+                    }}
+                  >
+                    Edit
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {selectedSketch && (
+      {editingSketch && (
+        <div className="editing-section">
+          <h4>Editing Sketch</h4>
+          <p>Modify the sketch by dragging in the viewport</p>
+        </div>
+      )}
+
+      {selectedSketch && !editingSketch && (
         <div className="extrude-section">
           <h4>Extrude Selected Sketch</h4>
           <div className="extrude-controls">

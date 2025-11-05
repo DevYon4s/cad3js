@@ -2,7 +2,7 @@
 
 A modern, web-based 3D CAD application built with React, Vite, and Three.js. Create, edit, and manipulate 3D objects with professional CAD tools including sketching, extrusion, selection, and transformation capabilities.
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 - Node.js (v16 or higher)
@@ -11,7 +11,7 @@ A modern, web-based 3D CAD application built with React, Vite, and Three.js. Cre
 ### Installation Steps
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/DevYon4s/cad3js.git
    cd cad3js
    ```
 
@@ -27,9 +27,9 @@ A modern, web-based 3D CAD application built with React, Vite, and Three.js. Cre
 
 4. **Open in browser**
    - Navigate to `http://localhost:5173`
-   - The application will load with a 3D viewport and toolbars
+   
 
-## 🎯 Core Features
+## Core Features
 
 ### 1. **3D Shape Creation**
 - **Primitive Shapes**: Box, Sphere, Cylinder
@@ -72,7 +72,35 @@ A modern, web-based 3D CAD application built with React, Vite, and Three.js. Cre
 - **Action Tracking**: Records all operations for rollback
 - **History Counter**: Visual indicator of current position in history
 
-### 7. **Camera & Navigation**
+### 7. **Editable Sketches**
+- **Edit Existing Sketches**: Modify 2D sketches after creation
+- **Edit Button**: Click "Edit" button in sketch panel to modify sketches
+- **Real-time Preview**: See changes while editing with visual feedback
+- **Cancel/Confirm**: ESC to cancel, click to confirm changes
+- **Dimension Updates**: Sketch dimensions update automatically during editing
+
+### 8. **Object Grouping**
+- **Multi-Selection**: Ctrl+Click to select multiple objects
+- **Group Creation**: Combine selected objects into manageable groups
+- **Group Management**: Rename, ungroup, or delete entire groups
+- **Visual Feedback**: Selected objects highlighted in green
+- **Transform Groups**: Move, rotate, and scale groups as single units
+
+### 9. **Face/Edge Dimension Editing**
+- **Dimension Display**: View calculated areas and edge lengths
+- **Edit Buttons**: Click edit icons next to face/edge measurements
+- **Interactive Editor**: Modal dialog for precise dimension input
+- **Real-time Updates**: Changes reflected immediately in 3D viewport
+- **Validation**: Input validation ensures positive values only
+
+### 10. **Draggable Properties Panel**
+- **Floating Panel**: Draggable properties window for flexible workflow
+- **Drag Handle**: Click and drag the header to reposition panel
+- **Close Button**: X button to hide the properties panel
+- **Keyboard Toggle**: Press 'P' to show/hide properties panel
+- **Persistent Position**: Panel remembers its position during session
+
+### 11. **Camera & Navigation**
 - **Orbit Controls**: Click and drag to rotate around scene
 - **Zoom**: Mouse wheel to zoom in/out
 - **Auto-disable**: Camera controls disabled during sketch mode
@@ -81,7 +109,6 @@ A modern, web-based 3D CAD application built with React, Vite, and Three.js. Cre
 ## 🎮 User Interface
 
 ### Top Navigation Bar
-- **Logo**: Application branding
 - **History Controls**: Undo, Redo, Clear History buttons
 - **Keyboard Shortcuts**: Tooltips showing shortcut keys
 - **History Counter**: Current position in action history
@@ -101,10 +128,18 @@ A modern, web-based 3D CAD application built with React, Vite, and Three.js. Cre
 - **Dimension Overlay**: Real-time measurements during sketching
 - **Transform Gizmos**: Visual handles for object manipulation
 
-## 🧪 Testing Examples
+## Testing Examples
 
 ### Import/Export Testing
 The application includes three test JSON files to demonstrate import/export functionality:
+
+### Testing Instructions
+1. **Download** any test file from the project root or create a json file and copy the examples above.
+2. **Click "Import Scene"** in the right panel
+3. **Select** the downloaded JSON file
+4. **Verify** objects appear with correct properties
+5. **Test Selection** - click objects to see transform gizmos
+6. **Test Export** - export the scene and compare JSON structure
 
 #### 1. **Basic Shapes Test** (`test-scene-basic.json`)
 - **Content**: Simple box, sphere, and cylinder
@@ -568,13 +603,7 @@ The application includes three test JSON files to demonstrate import/export func
 
 ```
 
-### Testing Instructions
-1. **Download** any test file from the project root or create a json file and copy the examples above.
-2. **Click "Import Scene"** in the right panel
-3. **Select** the downloaded JSON file
-4. **Verify** objects appear with correct properties
-5. **Test Selection** - click objects to see transform gizmos
-6. **Test Export** - export the scene and compare JSON structure
+
 
 ### Custom Test File Template
 
@@ -583,16 +612,18 @@ The application includes three test JSON files to demonstrate import/export func
 
 | Shortcut | Action |
 |----------|--------|
+| `Click` | Select shape |
+| `Shift+Click` | Select face |
+| `Ctrl+Click` | Select edge or multi-select for grouping |
 | `Ctrl+Z` | Undo last action |
 | `Ctrl+Y` | Redo last undone action |
 | `Ctrl+Shift+Z` | Alternative redo |
+| `P` | Toggle Properties Panel |
 | `G` | Toggle grid snapping (in sketch mode) |
 | `ESC` | Cancel current sketch operation |
-| `Shift+Click` | Select face |
-| `Ctrl+Click` | Select edge |
-| `Click` | Select shape |
 
-## 🎨 Selection & Properties
+
+## Selection & Properties
 
 ### Shape Properties
 - **Position**: X, Y, Z coordinates
@@ -610,7 +641,7 @@ The application includes three test JSON files to demonstrate import/export func
 - **Length**: Calculated edge length
 - **Endpoints**: Edge start and end points
 
-## 🔧 Technical Architecture
+## Technical Architecture
 
 ### Core Technologies
 - **React 19**: Modern React with hooks
@@ -620,10 +651,12 @@ The application includes three test JSON files to demonstrate import/export func
 
 ### Key Components
 - **useThree**: Core Three.js scene management
-- **useSelection**: Advanced raycasting and selection
-- **useSketch**: 2D sketching and extrusion logic
+- **useSelection**: Advanced raycasting and multi-selection
+- **useSketch**: 2D sketching, editing, and extrusion logic
+- **useGrouping**: Object grouping and management system
 - **useUndoRedo**: History management system
 - **CustomTransformControls**: Interactive transformation gizmos
+- **DimensionEditor**: Face/edge dimension editing interface
 
 ### File Structure
 ```
@@ -635,7 +668,7 @@ src/
 └── assets/            # Static assets
 ```
 
-## ⚠️ Known Limitations
+## Known Limitations
 
 ### Transform Controls
 - **Gizmo Interaction**: Occasionally gizmos may not respond on first click
@@ -647,10 +680,14 @@ src/
 - **Object Count**: Performance degrades with 100+ objects
 - **Real-time Updates**: Property panel updates may lag with complex selections
 
+### Sketch Editing
+- **Complex Shapes**: Only basic rectangle and circle sketches are editable
+- **Constraints**: No parametric constraints or dimension-driven editing
+- **History**: Sketch edits may not integrate perfectly with undo/redo system
 
+### Grouping
+- **Transform Limits**: Groups can only be transformed as units, not individual objects within groups
+- **Nesting**: Groups within groups are not supported
+- **Selection**: Cannot select individual objects within a group without ungrouping
 
-### Selection System
-- **Nested Objects**: Groups and nested hierarchies have limited support
-- **Precision**: Edge selection accuracy depends on geometry complexity
-- **Visual Feedback**: Selection highlights may not render correctly on all geometries
 

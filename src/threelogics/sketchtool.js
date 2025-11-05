@@ -19,6 +19,8 @@ class SketchTool {
     this.sketchGroup = new THREE.Group();
     this.completedSketches = [];
     this.dimensionText = null;
+    this.editingSketch = null;
+    this.originalSketchData = null;
     
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
@@ -158,6 +160,7 @@ class SketchTool {
     if (sketch) {
       this.completedSketches.push(sketch);
       this.sketchGroup.add(sketch.mesh);
+      console.log('Sketch added, total:', this.completedSketches.length);
     }
     
     this.clearPreview();
@@ -278,7 +281,12 @@ class SketchTool {
       id: Date.now()
     };
     
-    return { mesh, shape, type: 'rectangle' };
+    return { 
+      mesh, 
+      shape, 
+      type: 'rectangle',
+      id: mesh.userData.id
+    };
   }
   
   createCircleSketch() {
@@ -312,7 +320,12 @@ class SketchTool {
       id: Date.now()
     };
     
-    return { mesh, shape, type: 'circle' };
+    return { 
+      mesh, 
+      shape, 
+      type: 'circle',
+      id: mesh.userData.id
+    };
   }
   
   clearPreview() {
@@ -393,6 +406,53 @@ class SketchTool {
     if (this.onDimensionUpdate) {
       this.onDimensionUpdate(text);
     }
+  }
+  
+  startEditing(sketch) {
+    this.editingSketch = sketch;
+    this.originalSketchData = JSON.parse(JSON.stringify(sketch));
+    if (sketch.mesh && sketch.mesh.parent) {
+      sketch.mesh.parent.remove(sketch.mesh);
+    }
+    this.activate(sketch.type);
+    this.drawingState = 'drawing';
+    this.startPoint = new THREE.Vector3(sketch.startX || 0, 0, sketch.startZ || 0);
+    this.currentPoint = new THREE.Vector3(sketch.endX || 1, 0, sketch.endZ || 1);
+    this.updatePreview();
+  }
+  
+  finishEditing() {
+    if (!this.editingSketch) return null;
+    
+    const updatedSketch = {
+      ...this.editingSketch,
+      startX: this.startPoint.x,
+      startZ: this.startPoint.z,
+      endX: this.currentPoint.x,
+      endZ: this.currentPoint.z
+    };
+    
+    const newMesh = this.createSketchGeometry();
+    if (newMesh) {
+      updatedSketch.mesh = newMesh.mesh;
+      this.scene.add(newMesh.mesh);
+    }
+    
+    this.editingSketch = null;
+    this.originalSketchData = null;
+    this.deactivate();
+    return updatedSketch;
+  }
+  
+  cancelEditing() {
+    if (this.editingSketch && this.originalSketchData) {
+      if (this.originalSketchData.mesh) {
+        this.scene.add(this.originalSketchData.mesh);
+      }
+    }
+    this.editingSketch = null;
+    this.originalSketchData = null;
+    this.deactivate();
   }
   
   dispose() {

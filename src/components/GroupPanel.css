@@ -1,0 +1,205 @@
+.group-panel {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.group-panel-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.group-panel-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #2c3e50;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.selection-info h4, .groups-list h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  color: #495057;
+  font-weight: 600;
+}
+
+.selection-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.create-group-btn, .clear-selection-btn {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.create-group-btn {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+.create-group-btn:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.create-group-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.clear-selection-btn {
+  background-color: #f8f9fa;
+  color: #6c757d;
+}
+
+.clear-selection-btn:hover {
+  background-color: #e9ecef;
+}
+
+.selection-hint {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-style: italic;
+  margin: 0;
+}
+
+.no-groups {
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+  margin: 0;
+}
+
+.group-items {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  background-color: #f8f9fa;
+}
+
+.group-info {
+  flex: 1;
+}
+
+.group-name-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.group-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.group-count {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.group-rename input {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.group-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.rename-btn, .ungroup-btn, .delete-group-btn {
+  padding: 0.25rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rename-btn {
+  color: #007bff;
+}
+
+.rename-btn:hover {
+  background-color: #e7f3ff;
+  border-color: #007bff;
+}
+
+.ungroup-btn {
+  color: #ffc107;
+}
+
+.ungroup-btn:hover {
+  background-color: #fff3cd;
+  border-color: #ffc107;
+}
+
+.delete-group-btn {
+  color: #dc3545;
+}
+
+.delete-group-btn:hover {
+  background-color: #f8d7da;
+  border-color: #dc3545;
+}
+
+.group-help {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.group-help h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  color: #495057;
+  font-weight: 600;
+}
+
+.group-help ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.group-help li {
+  padding: 0.25rem 0;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.group-help li strong {
+  color: #495057;
+}

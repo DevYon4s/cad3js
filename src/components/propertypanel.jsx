@@ -1,18 +1,85 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Edit, X, Move } from 'lucide-react';
+import DimensionEditor from './DimensionEditor';
 import './PropertyPanel.css';
 
-const PropertyPanel = ({ selected, transformControls }) => {
+const PropertyPanel = ({ selected, transformControls, onUpdateDimension, isVisible, onClose }) => {
   const [currentTransformMode, setCurrentTransformMode] = useState('translate');
+  const [showDimensionEditor, setShowDimensionEditor] = useState(false);
+  const [position, setPosition] = useState({ x: 20, y: 100 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const panelRef = useRef(null);
   
   const handleTransformModeChange = (mode) => {
     setCurrentTransformMode(mode);
     transformControls?.setTransformMode(mode);
   };
-  if (!selected) {
-    return (
-      <div className="property-panel">
+  
+  const handleMouseDown = (e) => {
+    if (e.target.closest('.close-btn')) return;
+    setIsDragging(true);
+    const rect = panelRef.current.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
+  
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+      setPosition({
+        x: e.clientX - dragOffset.x,
+        y: e.clientY - dragOffset.y
+      });
+    };
+    
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+    
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
+  
+  if (!isVisible) return null;
+
+
+  const { type, object, data } = selected || {};
+
+  return (
+    <div 
+      ref={panelRef}
+      className="property-panel draggable"
+      style={{
+        position: 'fixed',
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        zIndex: 1000,
+        width: '350px',
+        cursor: isDragging ? 'grabbing' : 'default'
+      }}
+    >
+      <div className="property-header" onMouseDown={handleMouseDown}>
+        <div className="drag-handle">
+          <Move size={16} />
+        </div>
         <h2>Properties</h2>
+        <button className="close-btn" onClick={onClose}>
+          <X size={16} />
+        </button>
+      </div>
+      
+      {!selected && (
         <div className="no-selection">
           <p>No item selected</p>
           <div className="selection-help">
@@ -24,20 +91,12 @@ const PropertyPanel = ({ selected, transformControls }) => {
             </ul>
           </div>
         </div>
-      </div>
-    );
-  }
-
-  const { type, object, data } = selected;
-
-  return (
-    <div className="property-panel">
-      <h2>Properties</h2>
+      )}
       <div className="property-group">
         <h3>Selection Info</h3>
         <div className="property-item">
           <label>Type:</label>
-          <span className={`selection-type ${type}`}>{type.toUpperCase()}</span>
+          <span className={`selection-type ${type}`}>{type?.toUpperCase()}</span>
         </div>
         {object && (
           <div className="property-item">
@@ -48,12 +107,12 @@ const PropertyPanel = ({ selected, transformControls }) => {
         {data?.cadType && (
           <div className="property-item">
             <label>Shape Type:</label>
-            <span>{data.cadType.toUpperCase()}</span>
+            <span>{data?.cadType?.toUpperCase()}</span>
           </div>
         )}
       </div>
       
-      {type === 'shape' && data && (
+      {selected && type === 'shape' && data && (
         <>
           <div className="property-group">
             <h3>Transform Controls</h3>
@@ -106,7 +165,7 @@ const PropertyPanel = ({ selected, transformControls }) => {
         </>
       )}
       
-      {type === 'face' && (
+      {selected && type === 'face' && (
         <div className="property-group">
           <h3>Face Properties</h3>
           <div className="property-item">
@@ -116,6 +175,13 @@ const PropertyPanel = ({ selected, transformControls }) => {
           <div className="property-item">
             <label>Area:</label>
             <span>{data.area ? data.area.toFixed(4) : 'N/A'}</span>
+            <button 
+              className="edit-dimension-btn"
+              onClick={() => setShowDimensionEditor(true)}
+              title="Edit Area"
+            >
+              <Edit size={14} />
+            </button>
           </div>
           <div className="property-item">
             <label>Normal:</label>
@@ -124,7 +190,7 @@ const PropertyPanel = ({ selected, transformControls }) => {
         </div>
       )}
       
-      {type === 'edge' && (
+      {selected && type === 'edge' && (
         <div className="property-group">
           <h3>Edge Properties</h3>
           <div className="property-item">
@@ -134,8 +200,22 @@ const PropertyPanel = ({ selected, transformControls }) => {
           <div className="property-item">
             <label>Length:</label>
             <span>{data.edge ? data.edge[0].distanceTo(data.edge[1]).toFixed(2) : 'N/A'}</span>
+            <button 
+              className="edit-dimension-btn"
+              onClick={() => setShowDimensionEditor(true)}
+              title="Edit Length"
+            >
+              <Edit size={14} />
+            </button>
           </div>
         </div>
+      )}
+      {showDimensionEditor && (
+        <DimensionEditor
+          selected={selected}
+          onUpdateDimension={onUpdateDimension}
+          onClose={() => setShowDimensionEditor(false)}
+        />
       )}
     </div>
   );

@@ -7,6 +7,7 @@ const useSketch = (scene, camera, renderer) => {
   const [currentSketchTool, setCurrentSketchTool] = useState('rectangle');
   const [completedSketches, setCompletedSketches] = useState([]);
   const [selectedSketch, setSelectedSketch] = useState(null);
+  const [editingSketch, setEditingSketch] = useState(null);
   const [currentDimensions, setCurrentDimensions] = useState(null);
   const [showDimensions, setShowDimensions] = useState(false);
 
@@ -45,6 +46,16 @@ const useSketch = (scene, camera, renderer) => {
       updateCompletedSketches();
     }
   };
+  
+  // Update sketches when sketch tool changes
+  useEffect(() => {
+    if (sketchToolRef.current) {
+      const interval = setInterval(() => {
+        updateCompletedSketches();
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [sketchToolRef.current]);
 
   const switchSketchTool = (tool) => {
     if (sketchToolRef.current && isSketchMode) {
@@ -56,7 +67,9 @@ const useSketch = (scene, camera, renderer) => {
 
   const updateCompletedSketches = () => {
     if (sketchToolRef.current) {
-      setCompletedSketches(sketchToolRef.current.getCompletedSketches());
+      const sketches = sketchToolRef.current.getCompletedSketches();
+      console.log('Updating sketches:', sketches.length);
+      setCompletedSketches(sketches);
     }
   };
 
@@ -87,7 +100,35 @@ const useSketch = (scene, camera, renderer) => {
       sketchToolRef.current.clearAllSketches();
       setCompletedSketches([]);
       setSelectedSketch(null);
+      setEditingSketch(null);
     }
+  };
+  
+  const startEditingSketch = (sketchId) => {
+    const sketch = completedSketches.find(s => s.id === sketchId);
+    if (sketch && sketchToolRef.current) {
+      setEditingSketch(sketch);
+      sketchToolRef.current.startEditing(sketch);
+    }
+  };
+  
+  const finishEditingSketch = () => {
+    if (editingSketch && sketchToolRef.current) {
+      const updatedSketch = sketchToolRef.current.finishEditing();
+      if (updatedSketch) {
+        setCompletedSketches(prev => 
+          prev.map(s => s.id === editingSketch.id ? updatedSketch : s)
+        );
+      }
+      setEditingSketch(null);
+    }
+  };
+  
+  const cancelEditingSketch = () => {
+    if (editingSketch && sketchToolRef.current) {
+      sketchToolRef.current.cancelEditing();
+    }
+    setEditingSketch(null);
   };
 
   const toggleSnapToGrid = () => {
@@ -112,7 +153,11 @@ const useSketch = (scene, camera, renderer) => {
     toggleSnapToGrid,
     currentDimensions,
     showDimensions,
-    sketchTool: sketchToolRef.current
+    sketchTool: sketchToolRef.current,
+    editingSketch,
+    startEditingSketch,
+    finishEditingSketch,
+    cancelEditingSketch
   };
 };
 
