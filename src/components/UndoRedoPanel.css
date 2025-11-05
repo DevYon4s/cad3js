@@ -1,0 +1,114 @@
+.undo-redo-panel {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.history-info {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-family: monospace;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.undo-btn, .redo-btn, .clear-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.undo-btn {
+  background-color: #6c757d;
+  color: white;
+  border-color: #6c757d;
+}
+
+.undo-btn:hover:not(:disabled) {
+  background-color: #5a6268;
+  border-color: #5a6268;
+}
+
+.redo-btn {
+  background-color: #495057;
+  color: white;
+  border-color: #495057;
+}
+
+.redo-btn:hover:not(:disabled) {
+  background-color: #343a40;
+  border-color: #343a40;
+}
+
+.clear-btn {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border-color: #ced4da;
+}
+
+.clear-btn:hover:not(:disabled) {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+  color: #495057;
+}
+
+.undo-btn:disabled, .redo-btn:disabled, .clear-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.panel-info {
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.panel-info h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  color: #495057;
+  font-weight: 600;
+}
+
+.panel-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.panel-info li {
+  padding: 0.25rem 0;
+  font-size: 0.8rem;
+  color: #6c757d;
+}

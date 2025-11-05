@@ -4,10 +4,12 @@ import useThree from './hooks/usethree';
 import { createBox, createSphere, createCylinder } from './threelogics/primitives';
 import useSelection from './hooks/useselection';
 import useSketch from './hooks/usesketch';
+import useUndoRedo from './hooks/useUndoRedo';
 import CadToolbar from './components/cadtoolbar';
 import PropertyPanel from './components/propertypanel';
 import SketchPanel from './components/SketchPanel';
 import ImportExportPanel from './components/ImportExportPanel';
+import UndoRedoPanel from './components/UndoRedoPanel';
 import DimensionOverlay from './components/DimensionOverlay';
 import TopNav from './components/TopNav';
 import './App.css';
@@ -18,6 +20,7 @@ function App() {
   const transformControls = { attachTransformControls, detachTransformControls, setTransformMode };
   const selected = useSelection(camera, scene, canvasRef.current, transformControls);
   const sketch = useSketch(scene, camera, renderer);
+  const undoRedo = useUndoRedo();
   
   // Set camera control callbacks for sketch tool
   useEffect(() => {
@@ -105,13 +108,53 @@ function App() {
   
   const handleImportComplete = (result) => {
     console.log('Import completed:', result);
-    // Force re-render or update state if needed
+    undoRedo.saveState({ action: 'import', objectCount: result.objectCount }, 'Import scene');
   };
+
+  const handleUndo = () => {
+    const prevState = undoRedo.undo();
+    if (prevState) {
+      console.log('Undo:', prevState.action);
+    }
+  };
+
+  const handleRedo = () => {
+    const nextState = undoRedo.redo();
+    if (nextState) {
+      console.log('Redo:', nextState.action);
+    }
+  };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey || event.metaKey) {
+        if (event.key === 'z' && !event.shiftKey) {
+          event.preventDefault();
+          handleUndo();
+        } else if ((event.key === 'y') || (event.key === 'z' && event.shiftKey)) {
+          event.preventDefault();
+          handleRedo();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div className="App">
       <div className="top-nav-container">
-        <TopNav />
+        <TopNav 
+          onUndo={handleUndo}
+          onRedo={handleRedo}
+          onClearHistory={undoRedo.clearHistory}
+          canUndo={undoRedo.canUndo}
+          canRedo={undoRedo.canRedo}
+          historyLength={undoRedo.historyLength}
+          currentIndex={undoRedo.currentIndex}
+        />
       </div>
       <div className="main-content">
         <CadToolbar 

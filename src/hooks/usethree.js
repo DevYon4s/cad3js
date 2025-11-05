@@ -1,7 +1,7 @@
 
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
+import CustomTransformControls from '../threelogics/CustomTransformControls';
 
 const useThree = (canvasRef) => {
   const sceneRef = useRef(new THREE.Scene());
@@ -78,26 +78,17 @@ const useThree = (canvasRef) => {
     window.addEventListener('mouseup', onMouseUp);
     canvasRef.current.addEventListener('wheel', onWheel);
     
-    // Initialize Transform Controls
+    // Initialize Custom Transform Controls
     try {
-      const transformControls = new TransformControls(cameraRef.current, renderer.domElement);
+      const transformControls = new CustomTransformControls(cameraRef.current, renderer.domElement);
       transformControls.setMode('translate'); // Default to translate mode
-      transformControls.setSize(1.5); // Make gizmos larger and more visible
       transformControls.visible = false; // Hide by default
-      
-      transformControls.addEventListener('change', () => {
-        // Trigger re-render when transform changes
-      });
-      
-      transformControls.addEventListener('dragging-changed', (event) => {
-        controlsEnabledRef.current = !event.value;
-      });
       
       // Add to scene
       sceneRef.current.add(transformControls);
       transformControlsRef.current = transformControls;
     } catch (error) {
-      console.error('Failed to initialize TransformControls:', error);
+      console.error('Failed to initialize CustomTransformControls:', error);
     }
 
     // Render loop
@@ -158,6 +149,9 @@ const useThree = (canvasRef) => {
       if (transformControlsRef.current.object) {
         transformControlsRef.current.detach();
       }
+      // Set camera control callbacks
+      transformControlsRef.current.onEnableCameraControls = enableCameraControls;
+      transformControlsRef.current.onDisableCameraControls = disableCameraControls;
       // Attach the new object
       transformControlsRef.current.attach(object);
       transformControlsRef.current.visible = true;
