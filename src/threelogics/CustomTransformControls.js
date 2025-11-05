@@ -240,6 +240,8 @@ class CustomTransformControls extends THREE.Object3D {
       } else if (this.selectedAxis === 'z') {
         this.object.rotation.z += deltaX * rotationSpeed;
       }
+      // Keep gizmo position synced with object position
+      this.position.copy(this.object.position);
     } else if (this.mode === 'scale') {
       const scaleSpeed = 0.01;
       const scaleDelta = deltaX + deltaY;
@@ -250,6 +252,8 @@ class CustomTransformControls extends THREE.Object3D {
       } else if (this.selectedAxis === 'z') {
         this.object.scale.z = Math.max(0.1, this.object.scale.z + scaleDelta);
       }
+      // Keep gizmo position synced with object position
+      this.position.copy(this.object.position);
     }
   }
   

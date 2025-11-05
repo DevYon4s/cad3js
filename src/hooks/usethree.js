@@ -92,21 +92,27 @@ const useThree = (canvasRef, undoRedo = null) => {
             rotation: object.rotation.clone(),
             scale: object.scale.clone()
           };
+
         };
         
         transformControls.onTransformEnd = (object) => {
           if (transformControls._initialState) {
-            undoRedo.saveState({
+            const finalState = {
+              position: object.position.clone(),
+              rotation: object.rotation.clone(),
+              scale: object.scale.clone()
+            };
+
+            
+            const historyState = {
               action: 'transform',
               objectId: object.userData.id,
               mode: transformControls.mode,
               before: transformControls._initialState,
-              after: {
-                position: object.position.clone(),
-                rotation: object.rotation.clone(),
-                scale: object.scale.clone()
-              }
-            }, `Transform ${transformControls.mode}`);
+              after: finalState
+            };
+            console.log('Saving transform state:', historyState);
+            undoRedo.saveState(historyState, `Transform ${transformControls.mode}`);
           }
         };
       }
@@ -171,7 +177,7 @@ const useThree = (canvasRef, undoRedo = null) => {
 
   const attachTransformControls = (object) => {
     if (transformControlsRef.current && object) {
-      console.log('Attaching transform controls to:', object);
+
       // Detach any previously attached object
       if (transformControlsRef.current.object) {
         transformControlsRef.current.detach();
@@ -183,7 +189,7 @@ const useThree = (canvasRef, undoRedo = null) => {
       transformControlsRef.current.attach(object);
       transformControlsRef.current.visible = true;
       transformControlsRef.current.enabled = true;
-      console.log('Transform controls attached, visible:', transformControlsRef.current.visible);
+
     }
   };
   

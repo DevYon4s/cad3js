@@ -122,7 +122,7 @@ function App() {
   const handleUndo = () => {
     const prevState = undoRedo.undo();
     if (prevState) {
-      console.log('Undo:', prevState.action);
+      console.log('Undoing:', prevState);
       applyHistoryState(prevState.state, 'undo');
     }
   };
@@ -130,7 +130,7 @@ function App() {
   const handleRedo = () => {
     const nextState = undoRedo.redo();
     if (nextState) {
-      console.log('Redo:', nextState.action);
+      console.log('Redoing:', nextState);
       applyHistoryState(nextState.state, 'redo');
     }
   };
@@ -176,9 +176,20 @@ function App() {
       );
       if (objectToTransform) {
         const targetState = direction === 'undo' ? state.before : state.after;
+
         objectToTransform.position.copy(targetState.position);
         objectToTransform.rotation.copy(targetState.rotation);
         objectToTransform.scale.copy(targetState.scale);
+        
+        // Update transform controls position if this object is currently selected
+        if (transformControls && transformControls.attachTransformControls) {
+          const currentSelected = scene.children.find(child => 
+            child.userData && child.userData.id === state.objectId
+          );
+          if (currentSelected && selected?.object === currentSelected) {
+            transformControls.attachTransformControls(currentSelected);
+          }
+        }
       }
     }
   };
@@ -199,7 +210,7 @@ function App() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [handleUndo, handleRedo]);
 
   return (
     <div className="App">
@@ -207,7 +218,15 @@ function App() {
         <TopNav 
           onUndo={handleUndo}
           onRedo={handleRedo}
-          onClearHistory={undoRedo.clearHistory}
+          onClearHistory={() => {
+            // Clear all CAD objects from scene
+            const objectsToRemove = scene.children.filter(child => 
+              child.userData && (child.userData.cadType || child.userData.id)
+            );
+            objectsToRemove.forEach(obj => scene.remove(obj));
+            setShapeCount(0);
+            undoRedo.clearHistory();
+          }}
           canUndo={undoRedo.canUndo}
           canRedo={undoRedo.canRedo}
           historyLength={undoRedo.historyLength}
