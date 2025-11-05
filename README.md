@@ -87,10 +87,12 @@ A modern, web-based 3D CAD application built with React, Vite, and Three.js. Cre
 - **Transform Groups**: Move, rotate, and scale groups as single units
 
 ### 9. **Face/Edge Dimension Editing**
+- **Face Selection**: Shift+Click to select faces and view/edit area
+- **Edge Selection**: Ctrl+Alt+Click to select edges and view/edit length
 - **Dimension Display**: View calculated areas and edge lengths
 - **Edit Buttons**: Click edit icons next to face/edge measurements
 - **Interactive Editor**: Modal dialog for precise dimension input
-- **Real-time Updates**: Changes reflected immediately in 3D viewport
+- **Real-time Scaling**: Object scales proportionally to match new dimensions
 - **Validation**: Input validation ensures positive values only
 
 ### 10. **Draggable Properties Panel**
@@ -634,12 +636,12 @@ The application includes three test JSON files to demonstrate import/export func
 - **ID**: Unique identifier
 
 ### Face Properties
-- **Area**: Calculated surface area
+- **Area**: Calculated surface area (editable with Shift+Click selection)
 - **Normal Vector**: Face normal direction (X, Y, Z)
 - **Face Index**: Internal face identifier
 
 ### Edge Properties
-- **Length**: Calculated edge length
+- **Length**: Calculated edge length (editable with Ctrl+Alt+Click selection)
 - **Endpoints**: Edge start and end points
 
 ## Technical Architecture
@@ -684,7 +686,6 @@ src/
 ### Sketch Editing
 - **Complex Shapes**: Only basic rectangle and circle sketches are editable
 - **Constraints**: No parametric constraints or dimension-driven editing
-- **History**: Sketch edits may not integrate perfectly with undo/redo system
 
 ### Grouping
 - **Transform Limits**: Groups can only be transformed as units, not individual objects within groups
